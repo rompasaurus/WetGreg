@@ -76,28 +76,32 @@ def setup_render():
     s.frame_start = 1
     s.frame_end = TOTAL
     s.render.fps = FPS
-    s.view_settings.view_transform = "Filmic"
-    s.view_settings.look = "Medium Contrast"
+    s.view_settings.view_transform = "Standard"
+    s.view_settings.look = "None"
 
 
 def import_pcb():
     """Import the GLB and return the root object + bounding dimensions."""
     bpy.ops.import_scene.gltf(filepath=GLB_PATH)
 
-    # GLB import may create multiple objects — parent them all under an empty
+    # Collect all imported objects (meshes + empties from the GLB)
     imported = [o for o in bpy.context.scene.objects if o.type in ('MESH', 'EMPTY')]
     if not imported:
         print("ERROR: No objects imported from GLB!")
         return None, None
 
-    # Compute bounding box of everything
+    # Find top-level imported objects (those with no parent or parented to
+    # the GLB root empty). GLB import typically creates one root empty.
+    roots = [o for o in imported if o.parent is None]
+    meshes = [o for o in imported if o.type == 'MESH']
+
+    # Compute world-space bounding box across ALL meshes
     mins = Vector((1e9, 1e9, 1e9))
     maxs = Vector((-1e9, -1e9, -1e9))
-    for obj in imported:
-        if obj.type != 'MESH':
-            continue
-        for v in obj.data.vertices:
-            wc = obj.matrix_world @ v.co
+    for obj in meshes:
+        # Use evaluated bounding box corners for speed
+        for corner in obj.bound_box:
+            wc = obj.matrix_world @ Vector(corner)
             for i in range(3):
                 mins[i] = min(mins[i], wc[i])
                 maxs[i] = max(maxs[i], wc[i])
@@ -106,18 +110,64 @@ def import_pcb():
     size = maxs - mins
     print(f"  PCB center: {center}, size: {size}")
 
-    # Create a pivot empty at the center and parent everything
-    bpy.ops.object.empty_add(location=center)
+    # Create pivot at ORIGIN, then shift all root objects so the assembly
+    # is centered at (0,0,0) — this way the camera target at origin works
+    bpy.ops.object.empty_add(location=(0, 0, 0))
     pivot = bpy.context.active_object
     pivot.name = "PCB_Pivot"
 
-    for obj in imported:
-        if obj.parent is None:
-            obj.parent = pivot
-            # Compensate so visual position doesn't change
-            obj.matrix_parent_inverse = pivot.matrix_world.inverted()
+    for obj in roots:
+        obj.parent = pivot
+        # Shift the object so the assembly center lands on the origin
+        obj.location = obj.location - center
 
     return pivot, size
+
+
+def fix_pcb_materials():
+    """Fix KiCad GLB materials: green board, proper soldermask, nudge layers."""
+    KICAD_GREEN = (0.04, 0.22, 0.08, 1.0)
+    SOLDERMASK_GREEN = (0.03, 0.18, 0.07, 1.0)
+
+    for mat in bpy.data.materials:
+        if not mat.use_nodes:
+            continue
+        bsdf = mat.node_tree.nodes.get("Principled BSDF")
+        if not bsdf:
+            continue
+        bc = tuple(round(c, 2) for c in bsdf.inputs["Base Color"].default_value)
+
+        # Olive PCB body → green
+        if bc == (0.42, 0.45, 0.29, 1.0):
+            bsdf.inputs["Base Color"].default_value = KICAD_GREEN
+            bsdf.inputs["Roughness"].default_value = 0.35
+        # Dark soldermask → proper green
+        elif bc == (0.08, 0.2, 0.14, 1.0):
+            bsdf.inputs["Base Color"].default_value = SOLDERMASK_GREEN
+            bsdf.inputs["Roughness"].default_value = 0.3
+        # White silkscreen — dim slightly
+        elif bc[:3] == (1.0, 1.0, 1.0) and bsdf.inputs["Roughness"].default_value > 0.8:
+            bsdf.inputs["Base Color"].default_value = (0.95, 0.95, 0.95, 1.0)
+        # Copper traces → shinier
+        elif 0.5 < bc[0] < 0.8 and 0.4 < bc[1] < 0.6 and bc[2] < 0.3:
+            bsdf.inputs["Roughness"].default_value = 0.2
+
+    # Nudge ONLY board-layer meshes (single material, not components)
+    for obj in bpy.context.scene.objects:
+        if obj.type != 'MESH' or len(obj.material_slots) != 1:
+            continue
+        slot = obj.material_slots[0]
+        if not slot.material or not slot.material.use_nodes:
+            continue
+        bsdf = slot.material.node_tree.nodes.get("Principled BSDF")
+        if not bsdf:
+            continue
+        bc = tuple(round(c, 2) for c in bsdf.inputs["Base Color"].default_value)
+        if bc == tuple(round(c, 2) for c in SOLDERMASK_GREEN):
+            obj.location.z += 0.00003
+        elif bc[:3] == (0.95, 0.95, 0.95) and bsdf.inputs["Roughness"].default_value > 0.8:
+            obj.location.z += 0.00006
+    print("  PCB materials fixed")
 
 
 def setup_lights(size):
@@ -126,28 +176,28 @@ def setup_lights(size):
     # Key light — warm, top-right
     bpy.ops.object.light_add(type="AREA", location=(d, -d * 0.8, d * 1.2))
     key = bpy.context.active_object
-    key.data.energy = 15
-    key.data.size = d * 1.5
-    key.data.color = (1.0, 0.95, 0.88)
+    key.data.energy = 4
+    key.data.size = d * 2
+    key.data.color = (1.0, 0.98, 0.95)
 
     # Fill light — cool, left
     bpy.ops.object.light_add(type="AREA", location=(-d * 0.8, -d * 0.5, d * 0.6))
     fill = bpy.context.active_object
-    fill.data.energy = 8
-    fill.data.size = d * 2
-    fill.data.color = (0.85, 0.9, 1.0)
+    fill.data.energy = 2
+    fill.data.size = d * 2.5
+    fill.data.color = (0.95, 0.97, 1.0)
 
     # Rim/accent — purple, behind
     bpy.ops.object.light_add(type="AREA", location=(d * 0.3, d, d * 0.4))
     rim = bpy.context.active_object
-    rim.data.energy = 10
+    rim.data.energy = 2.5
     rim.data.size = d
-    rim.data.color = (0.75, 0.55, 0.95)
+    rim.data.color = (0.85, 0.8, 1.0)
 
     # Backside fill — so the back components are well-lit during the hold
     bpy.ops.object.light_add(type="AREA", location=(0, d * 0.8, -d * 0.3))
     back_fill = bpy.context.active_object
-    back_fill.data.energy = 6
+    back_fill.data.energy = 2
     back_fill.data.size = d * 1.5
     back_fill.data.color = (0.9, 0.85, 1.0)
 
@@ -156,29 +206,27 @@ def setup_lights(size):
     bpy.context.scene.world = world
     world.use_nodes = True
     bg = world.node_tree.nodes["Background"]
-    bg.inputs["Color"].default_value = (0.015, 0.015, 0.025, 1)
-    bg.inputs["Strength"].default_value = 0.3
+    bg.inputs["Color"].default_value = (0.02, 0.02, 0.03, 1)
+    bg.inputs["Strength"].default_value = 0.15
 
 
 def setup_camera(size):
-    """Fixed camera looking at center. Pull back far enough that the board
-    is never clipped at any rotation angle (diagonal is worst case)."""
-    # Diagonal of the bounding box = max extent when board rotates edge-on
+    """Fixed camera at a 3/4 top-down angle. Pull back far enough that
+    the board is never clipped at any rotation angle."""
     diagonal = size.length
-    # Pull camera back 3x the diagonal so the board always fits with margin
-    d = diagonal * 3.0
+    d = diagonal * 2.8
 
     bpy.ops.object.empty_add(location=(0, 0, 0))
     target = bpy.context.active_object
     target.name = "CamTarget"
 
-    bpy.ops.object.camera_add(location=(0, -d, d * 0.2))
+    # Camera at ~40-degree angle above the board — shows top face nicely
+    # and still gives good depth when the board flips
+    bpy.ops.object.camera_add(location=(d * 0.25, -d * 0.7, d * 0.65))
     cam = bpy.context.active_object
     cam.name = "Camera"
     bpy.context.scene.camera = cam
-    # Use a longer lens to reduce perspective distortion — keeps the whole
-    # board visible without fish-eye stretching at the edges
-    cam.data.lens = 65
+    cam.data.lens = 60
     cam.data.clip_start = 0.0001
     cam.data.clip_end = 200
 
@@ -235,12 +283,18 @@ def animate_pcb(pivot):
         pivot.rotation_euler = Euler((x_rot, 0, z_rot), 'XYZ')
         pivot.keyframe_insert(data_path="rotation_euler", frame=frame)
 
-    # Smooth all keyframes
-    if pivot.animation_data and pivot.animation_data.action:
-        for fc in pivot.animation_data.action.fcurves:
-            for kp in fc.keyframe_points:
-                kp.interpolation = 'BEZIER'
-                kp.easing = 'EASE_IN_OUT'
+    # Smooth all keyframes (Blender 5.x layered action API)
+    try:
+        action = pivot.animation_data.action
+        for layer in action.layers:
+            for strip in layer.strips:
+                for chan in strip.channels():
+                    for fc in chan.fcurves:
+                        for kp in fc.keyframe_points:
+                            kp.interpolation = 'BEZIER'
+                            kp.easing = 'EASE_IN_OUT'
+    except (AttributeError, TypeError):
+        print("  (skipped keyframe smoothing — default interpolation used)")
 
 
 def render_frames():
@@ -273,6 +327,7 @@ def main():
     if not pivot:
         return
 
+    fix_pcb_materials()
     setup_lights(size)
     cam, cam_dist = setup_camera(size)
     animate_pcb(pivot)
