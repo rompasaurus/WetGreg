@@ -1,13 +1,6 @@
 #!/bin/bash
-# Render PCB showcase: tumble rotation showing ALL sides, settle to front dead-on
-# 300 frames (10s at 30fps)
-#
-# Animation path:
-#   Phase 1 (frames 1-90, 3s):    3/4 orbit, top angled view
-#   Phase 2 (frames 91-150, 2s):  Tilt to show the BACK side (flip over)
-#   Phase 3 (frames 151-210, 2s): Come back around, showing bottom-side angles
-#   Phase 4 (frames 211-270, 2s): Return to top, slow down rotation
-#   Phase 5 (frames 271-300, 1s): Settle to dead-on front top view
+# PCB showcase: top view → flip to back → flip back to front dead-on
+# 180 frames (6s at 30fps) — clean and tight, no unnecessary spinning
 
 PCB="/home/rompasaurus/COdingProjects/Dilder-PCB/Dilder Full PCB Rev 1/Dilder Full PCB Rev 1.kicad_pcb"
 OUTDIR="/home/rompasaurus/COdingProjects/WetGreg/assembly-animation/frames/pcb"
@@ -16,67 +9,49 @@ export KICAD10_3DMODEL_DIR=/usr/share/kicad/3dmodels
 mkdir -p "$OUTDIR"
 rm -f "$OUTDIR"/frame_*.png
 
-TOTAL=300
+TOTAL=180
 echo "=========================================="
-echo "PCB SHOWCASE RENDER — $TOTAL frames (10s)"
+echo "PCB SHOWCASE — $TOTAL frames (6s)"
+echo "  Phase 1 (0-2s):  Angled top, slow rotate"
+echo "  Phase 2 (2-4s):  Flip to show back"
+echo "  Phase 3 (4-6s):  Flip back, settle front"
 echo "=========================================="
 
 for i in $(seq 1 $TOTAL); do
-    # Python does the math for smooth animation curves
     ANGLES=$(python3 -c "
 import math
 
 frame = $i
 total = $TOTAL
-
 t = (frame - 1) / (total - 1)  # 0 to 1
 
-# Z rotation: full 540° sweep (1.5 rotations), decelerating at end
-if t < 0.9:
-    # Main rotation phase
-    zt = t / 0.9
-    z = zt * 540
-else:
-    # Settle phase: ease to 0° (front view)
-    st = (t - 0.9) / 0.1
-    ease = st * st * (3 - 2 * st)  # smoothstep
-    z_at_90 = 540.0
-    z = z_at_90 * (1 - ease)  # ease to 0
+# 3 equal phases
+if t < 0.333:
+    # Phase 1: Angled top view, gentle Z orbit
+    pt = t / 0.333
+    x = -30
+    z = pt * 60  # 0 to 60 degrees
 
-# X rotation (tilt): shows all angles
-# Start at -30 (angled top), dip to -180 (back side), return to 0 (dead-on)
-if t < 0.25:
-    # Angled top view
-    x = -30 + t * 4 * (-10)  # -30 to -40
-elif t < 0.5:
-    # Flip to show back: -40 to -180
-    ft = (t - 0.25) / 0.25
-    ease = ft * ft * (3 - 2 * ft)
-    x = -40 + ease * (-140)  # -40 to -180
-elif t < 0.75:
-    # Come back from back: -180 to -320 (same as -320 + 360 = +40)
-    ft = (t - 0.5) / 0.25
-    ease = ft * ft * (3 - 2 * ft)
-    x = -180 + ease * (-140)  # -180 to -320
-elif t < 0.9:
-    # Settling: -320 to -360 (= 0°)
-    ft = (t - 0.75) / 0.15
-    ease = ft * ft * (3 - 2 * ft)
-    x = -320 + ease * (-40)  # -320 to -360
+elif t < 0.667:
+    # Phase 2: Flip to show back (X goes from -30 to -180)
+    pt = (t - 0.333) / 0.334
+    ease = pt * pt * (3 - 2 * pt)
+    x = -30 + ease * (-150)  # -30 to -180
+    z = 60 + pt * 30  # continue rotating slowly
+
 else:
-    # Final settle to dead-on: just 0 (or -360 same thing)
-    st = (t - 0.9) / 0.1
-    ease = st * st * (3 - 2 * st)
-    x = -360 + ease * 25  # slight -335 → nice ~-25° presentation angle
-    x = -25 * (1 - ease)  # ease from -25 to 0
+    # Phase 3: Flip back to front (X goes from -180 to -360 = 0)
+    pt = (t - 0.667) / 0.333
+    ease = pt * pt * (3 - 2 * pt)
+    x = -180 + ease * (-180)  # -180 to -360 (= 0)
+    z = 90 * (1 - ease)  # ease Z back to 0
 
 # Normalize
 x = x % 360
 if x > 180:
     x = x - 360
-z = z % 360
 
-print(f'{round(x,1)},{round(z,1)}')
+print(f'{round(x,1)},{round(z % 360, 1)}')
 ")
 
     X_ROT=$(echo "$ANGLES" | cut -d',' -f1)
@@ -97,10 +72,10 @@ print(f'{round(x,1)},{round(z,1)}')
         2>/dev/null
 
     if [ $((i % 30)) -eq 0 ] || [ $i -eq 1 ]; then
-        echo "  Frame $i/$TOTAL (X=${X_ROT}° Z=${Z_ROT}°)"
+        echo "  Frame $i/$TOTAL (X=${X_ROT} Z=${Z_ROT})"
     fi
 done
 
 echo ""
-echo "Done! $TOTAL frames in $OUTDIR"
-echo "Compile: ffmpeg -framerate 30 -i $OUTDIR/frame_%04d.png -c:v libvpx-vp9 -b:v 2M -pix_fmt yuva420p output/pcb_rotate.webm"
+echo "Done! Compile:"
+echo "  ffmpeg -framerate 30 -i $OUTDIR/frame_%04d.png -c:v libvpx-vp9 -b:v 2M -pix_fmt yuva420p output/pcb_rotate.webm"
