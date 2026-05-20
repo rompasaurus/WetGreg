@@ -159,6 +159,16 @@
       line-height: 1.5;
     }
 
+    /* ── Centered Bubble (no arrow, used in stacked layout) ── */
+    .bubble-centered {
+      max-width: 600px;
+      width: 90vw;
+    }
+    .bubble-centered::before,
+    .bubble-centered::after {
+      display: none;
+    }
+
     /* ── Emotion Colors ── */
     .color-sassy { color: var(--mauve); }
     .color-supportive { color: var(--green); }
@@ -378,148 +388,113 @@
 
   <!-- ═══ 3: CHAOTIC / WEIRD ═══ -->
   <section class="section glow-chaotic">
-    <div class="greg-row">
-      <div class="greg-slide">
-        <canvas class="octopus-canvas" data-emotion="chaotic" data-color="#fab387" data-scale="3" aria-hidden="true"></canvas>
-      </div>
-      <div class="reveal reveal-delay-1">
-        <div class="chat-bubble bubble-chaotic">
-          <span class="emotion-label color-chaotic">~ CHAOTIC GREG ~</span>
-          <span class="quote-text color-chaotic">"I JUST SNEEZED AND I THINK I SAW GOD."</span>
-        </div>
+    <div class="reveal">
+      <div class="chat-bubble bubble-chaotic bubble-centered">
+        <span class="emotion-label color-chaotic">~ CHAOTIC GREG ~</span>
+        <span class="quote-text color-chaotic">"I JUST SNEEZED AND I THINK I SAW GOD."</span>
       </div>
     </div>
-    <div class="reveal reveal-delay-2" style="margin-top:2rem">
+    <div class="reveal reveal-delay-1" style="margin-top:1.5rem">
       <p class="narrative">
         Greg is... <em>special</em>. He has a habit of saying weird things.
         Sometimes he can get a bit <strong style="color:var(--peach)">unhinged</strong>.
       </p>
     </div>
-    <div class="greg-row" style="margin-top:2rem">
-      <div class="greg-slide">
-        <canvas class="octopus-canvas" data-emotion="weird" data-color="#f9e2af" data-scale="3" aria-hidden="true"></canvas>
-      </div>
-      <div class="reveal reveal-delay-3">
-        <div class="chat-bubble bubble-chaotic" style="border-color:var(--yellow)">
-          <span class="emotion-label color-conspiratorial">~ CONSPIRATORIAL GREG ~</span>
-          <span class="quote-text color-conspiratorial">"BIRDS ARENT REAL. THEY CHARGE ON POWER LINES."</span>
-        </div>
+    <div class="reveal reveal-delay-2" style="margin-top:1.5rem">
+      <canvas class="octopus-canvas" data-emotion="chaotic" data-color="#fab387" data-scale="3" aria-hidden="true"></canvas>
+    </div>
+    <div class="reveal reveal-delay-3" style="margin-top:1.5rem">
+      <div class="chat-bubble bubble-chaotic bubble-centered" style="border-color:var(--yellow)">
+        <span class="emotion-label color-conspiratorial">~ CONSPIRATORIAL GREG ~</span>
+        <span class="quote-text color-conspiratorial">"BIRDS ARENT REAL. THEY CHARGE ON POWER LINES."</span>
       </div>
     </div>
   </section>
 
   <!-- ═══ 4: SUPPORTIVE ═══ -->
   <section class="section glow-supportive">
-    <div class="greg-row">
-      <div class="greg-slide">
-        <canvas class="octopus-canvas" data-emotion="excited" data-color="#a6e3a1" data-scale="3" aria-hidden="true"></canvas>
-      </div>
-      <div class="reveal reveal-delay-1">
-        <div class="chat-bubble bubble-supportive">
-          <span class="emotion-label color-supportive">~ SUPPORTIVE GREG ~</span>
-          <span class="quote-text color-supportive">"HEY. HEY YOU. YOURE INCREDIBLE. DEAL WITH IT."</span>
-        </div>
+    <div class="reveal">
+      <div class="chat-bubble bubble-supportive bubble-centered">
+        <span class="emotion-label color-supportive">~ SUPPORTIVE GREG ~</span>
+        <span class="quote-text color-supportive">"HEY. HEY YOU. YOURE INCREDIBLE. DEAL WITH IT."</span>
       </div>
     </div>
-    <div class="reveal reveal-delay-2" style="margin-top:2rem">
+    <div class="reveal reveal-delay-1" style="margin-top:1.5rem">
       <p class="narrative">But sometimes he can be a genuine <strong style="color:var(--green)">sweetheart</strong>.</p>
     </div>
-    <div class="greg-row" style="margin-top:2rem">
-      <div class="greg-slide">
-        <canvas class="octopus-canvas" data-emotion="normal" data-color="#a6e3a1" data-scale="3" aria-hidden="true"></canvas>
-      </div>
-      <div class="reveal reveal-delay-3">
-        <div class="chat-bubble bubble-supportive">
-          <span class="emotion-label color-supportive">~ SUPPORTIVE GREG ~</span>
-          <span class="quote-text color-supportive">"YOU HAVE SURVIVED 100% OF YOUR WORST DAYS. THATS A PERFECT RECORD."</span>
-        </div>
+    <div class="reveal reveal-delay-2" style="margin-top:1.5rem">
+      <canvas class="octopus-canvas" data-emotion="excited" data-color="#a6e3a1" data-scale="3" aria-hidden="true"></canvas>
+    </div>
+    <div class="reveal reveal-delay-3" style="margin-top:1.5rem">
+      <div class="chat-bubble bubble-supportive bubble-centered">
+        <span class="emotion-label color-supportive">~ SUPPORTIVE GREG ~</span>
+        <span class="quote-text color-supportive">"YOU HAVE SURVIVED 100% OF YOUR WORST DAYS. THATS A PERFECT RECORD."</span>
       </div>
     </div>
   </section>
 
   <!-- ═══ 5: ANGRY ═══ -->
   <section class="section glow-angry">
-    <div class="greg-row">
-      <div class="greg-slide">
-        <canvas class="octopus-canvas" data-emotion="angry" data-color="#f38ba8" data-scale="3" aria-hidden="true"></canvas>
-      </div>
-      <div class="reveal reveal-delay-1">
-        <div class="chat-bubble bubble-angry">
-          <span class="emotion-label color-angry">~ ANGRY GREG ~</span>
-          <span class="quote-text color-angry">"I HAVE 8 ARMS AND EVERY ONE OF THEM IS CROSSED RIGHT NOW."</span>
-        </div>
+    <div class="reveal">
+      <div class="chat-bubble bubble-angry bubble-centered">
+        <span class="emotion-label color-angry">~ ANGRY GREG ~</span>
+        <span class="quote-text color-angry">"I HAVE 8 ARMS AND EVERY ONE OF THEM IS CROSSED RIGHT NOW."</span>
       </div>
     </div>
-    <div class="reveal reveal-delay-2" style="margin-top:2rem">
+    <div class="reveal reveal-delay-1" style="margin-top:1.5rem">
       <p class="narrative">Other times his emotions can get the <strong style="color:var(--red)">better of him</strong>.</p>
     </div>
-    <div class="greg-row" style="margin-top:2rem">
-      <div class="greg-slide">
-        <canvas class="octopus-canvas" data-emotion="angry" data-color="#f38ba8" data-scale="3" aria-hidden="true"></canvas>
-      </div>
-      <div class="reveal reveal-delay-3">
-        <div class="chat-bubble bubble-angry">
-          <span class="emotion-label color-angry">~ ANGRY GREG ~</span>
-          <span class="quote-text color-angry">"IM SMALL AND ROUND AND FULL OF RAGE."</span>
-        </div>
+    <div class="reveal reveal-delay-2" style="margin-top:1.5rem">
+      <canvas class="octopus-canvas" data-emotion="angry" data-color="#f38ba8" data-scale="3" aria-hidden="true"></canvas>
+    </div>
+    <div class="reveal reveal-delay-3" style="margin-top:1.5rem">
+      <div class="chat-bubble bubble-angry bubble-centered">
+        <span class="emotion-label color-angry">~ ANGRY GREG ~</span>
+        <span class="quote-text color-angry">"IM SMALL AND ROUND AND FULL OF RAGE."</span>
       </div>
     </div>
   </section>
 
   <!-- ═══ 6: HUNGRY ═══ -->
   <section class="section glow-hungry">
-    <div class="greg-row">
-      <div class="greg-slide">
-        <canvas class="octopus-canvas" data-emotion="hungry" data-color="#f5c2e7" data-scale="3" aria-hidden="true"></canvas>
-      </div>
-      <div class="reveal reveal-delay-1">
-        <div class="chat-bubble bubble-hungry">
-          <span class="emotion-label color-hungry">~ HUNGRY GREG ~</span>
-          <span class="quote-text color-hungry">"EVERY THOUGHT I HAVE RIGHT NOW IS ABOUT SHRIMP."</span>
-        </div>
+    <div class="reveal">
+      <div class="chat-bubble bubble-hungry bubble-centered">
+        <span class="emotion-label color-hungry">~ HUNGRY GREG ~</span>
+        <span class="quote-text color-hungry">"EVERY THOUGHT I HAVE RIGHT NOW IS ABOUT SHRIMP."</span>
       </div>
     </div>
-    <div class="reveal reveal-delay-2" style="margin-top:2rem">
+    <div class="reveal reveal-delay-1" style="margin-top:1.5rem">
       <p class="narrative">And if you don't feed him he might get <strong style="color:var(--pink)">feisty</strong>.</p>
     </div>
-    <div class="greg-row" style="margin-top:2rem">
-      <div class="greg-slide">
-        <canvas class="octopus-canvas" data-emotion="hungry" data-color="#f5c2e7" data-scale="3" aria-hidden="true"></canvas>
-      </div>
-      <div class="reveal reveal-delay-3">
-        <div class="chat-bubble bubble-hungry">
-          <span class="emotion-label color-hungry">~ HUNGRY GREG ~</span>
-          <span class="quote-text color-hungry">"IM ONE MISSED MEAL AWAY FROM BECOMING A VILLAIN."</span>
-        </div>
+    <div class="reveal reveal-delay-2" style="margin-top:1.5rem">
+      <canvas class="octopus-canvas" data-emotion="hungry" data-color="#f5c2e7" data-scale="3" aria-hidden="true"></canvas>
+    </div>
+    <div class="reveal reveal-delay-3" style="margin-top:1.5rem">
+      <div class="chat-bubble bubble-hungry bubble-centered">
+        <span class="emotion-label color-hungry">~ HUNGRY GREG ~</span>
+        <span class="quote-text color-hungry">"IM ONE MISSED MEAL AWAY FROM BECOMING A VILLAIN."</span>
       </div>
     </div>
   </section>
 
   <!-- ═══ 7: CREEPY ═══ -->
   <section class="section glow-creepy">
-    <div class="greg-row">
-      <div class="greg-slide">
-        <canvas class="octopus-canvas" data-emotion="creepy" data-color="#f38ba8" data-scale="3" aria-hidden="true"></canvas>
-      </div>
-      <div class="reveal reveal-delay-1">
-        <div class="chat-bubble bubble-creepy">
-          <span class="emotion-label color-creepy">~ CREEPY GREG ~</span>
-          <span class="quote-text color-creepy">"I HAVE 8 ARMS AND THEY ALL WANT TO HOLD YOU."</span>
-        </div>
+    <div class="reveal">
+      <div class="chat-bubble bubble-creepy bubble-centered">
+        <span class="emotion-label color-creepy">~ CREEPY GREG ~</span>
+        <span class="quote-text color-creepy">"I HAVE 8 ARMS AND THEY ALL WANT TO HOLD YOU."</span>
       </div>
     </div>
-    <div class="reveal reveal-delay-2" style="margin-top:2rem">
+    <div class="reveal reveal-delay-1" style="margin-top:1.5rem">
       <p class="narrative">He can get... a bit <em>too</em> <strong style="color:var(--red)">attached</strong>.</p>
     </div>
-    <div class="greg-row" style="margin-top:2rem">
-      <div class="greg-slide">
-        <canvas class="octopus-canvas" data-emotion="creepy" data-color="#f38ba8" data-scale="3" aria-hidden="true"></canvas>
-      </div>
-      <div class="reveal reveal-delay-3">
-        <div class="chat-bubble bubble-creepy">
-          <span class="emotion-label color-creepy">~ CREEPY GREG ~</span>
-          <span class="quote-text color-creepy">"EVERY ONE OF MY NEURONS IS THINKING ABOUT YOU. THATS A LOT OF NEURONS."</span>
-        </div>
+    <div class="reveal reveal-delay-2" style="margin-top:1.5rem">
+      <canvas class="octopus-canvas" data-emotion="creepy" data-color="#f38ba8" data-scale="3" aria-hidden="true"></canvas>
+    </div>
+    <div class="reveal reveal-delay-3" style="margin-top:1.5rem">
+      <div class="chat-bubble bubble-creepy bubble-centered">
+        <span class="emotion-label color-creepy">~ CREEPY GREG ~</span>
+        <span class="quote-text color-creepy">"EVERY ONE OF MY NEURONS IS THINKING ABOUT YOU. THATS A LOT OF NEURONS."</span>
       </div>
     </div>
   </section>
