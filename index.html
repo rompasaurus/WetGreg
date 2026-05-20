@@ -595,6 +595,44 @@
     </div>
   </section>
 
+  <!-- ═══ 11: MAYO JAR ═══ -->
+  <section class="section" style="background:radial-gradient(ellipse at 50% 50%,rgba(249,226,175,0.04) 0%,transparent 60%)">
+    <div class="reveal">
+      <canvas id="mayo-canvas" style="max-width:500px;width:100%;aspect-ratio:1/1;border-radius:12px"></canvas>
+    </div>
+    <div class="reveal reveal-delay-2" style="margin-top:2rem">
+      <p class="hw-tagline">and this is a <strong style="color:var(--yellow)">jar of mayonnaise</strong></p>
+    </div>
+  </section>
+
+  <!-- ═══ 12: WHY ARE YOU STILL SCROLLING ═══ -->
+  <section class="section" style="background:radial-gradient(ellipse at 50% 50%,rgba(137,180,250,0.03) 0%,transparent 60%)">
+    <div class="reveal">
+      <p class="title-big" style="color:var(--subtext0)">...why are you still scrolling?</p>
+    </div>
+  </section>
+
+  <!-- ═══ 13: STOP ═══ -->
+  <section class="section" style="background:radial-gradient(ellipse at 50% 50%,rgba(243,139,168,0.05) 0%,transparent 60%)">
+    <div class="reveal">
+      <h1 class="title-huge" style="background:linear-gradient(135deg,var(--red),var(--peach));-webkit-background-clip:text;-webkit-text-fill-color:transparent">STOP!!</h1>
+    </div>
+  </section>
+
+  <!-- ═══ 14: FOR THE LOVE OF GOD ═══ -->
+  <section class="section" style="background:radial-gradient(ellipse at 50% 50%,rgba(243,139,168,0.04) 0%,transparent 60%)">
+    <div class="reveal">
+      <h2 class="title-big" style="color:var(--red);margin-bottom:1rem">for the love of God, STOP</h2>
+    </div>
+    <div class="reveal reveal-delay-1">
+      <p class="narrative" style="margin-top:1rem">i haven't thought this far ahead</p>
+    </div>
+    <div class="reveal reveal-delay-2" style="margin-top:2rem">
+      <p class="narrative" style="color:var(--surface2);font-size:0.9rem">this is all i have</p>
+    </div>
+  </section>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script>
   (function() {
     "use strict";
@@ -1205,10 +1243,344 @@
     }
 
     // ═══════════════════════════════════════════════
+    // MAYO JAR 3D RENDERER
+    // ═══════════════════════════════════════════════
+
+    function initMayoJar() {
+      var canvas = document.getElementById("mayo-canvas");
+      if (!canvas || typeof THREE === "undefined") return;
+
+      var size = 500;
+      canvas.width = size;
+      canvas.height = size;
+
+      var renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
+      renderer.setSize(size, size);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = 1.1;
+
+      var scene = new THREE.Scene();
+      // Camera pulled back and centered to show full jar with padding
+      var camera = new THREE.PerspectiveCamera(28, 1, 0.1, 100);
+      camera.position.set(0, 1.0, 7.5);
+      camera.lookAt(0, 0.6, 0);
+
+      // Lighting — soft studio setup
+      scene.add(new THREE.AmbientLight(0xffffff, 0.5));
+      var key = new THREE.DirectionalLight(0xffffff, 0.8);
+      key.position.set(3, 5, 4);
+      scene.add(key);
+      var fill = new THREE.DirectionalLight(0x8899cc, 0.3);
+      fill.position.set(-4, 2, -2);
+      scene.add(fill);
+      var rim = new THREE.DirectionalLight(0xffffff, 0.35);
+      rim.position.set(0, 3, -5);
+      scene.add(rim);
+      // Subtle underlight so bottom isn't pure black
+      var under = new THREE.PointLight(0xfdf6e3, 0.15, 8);
+      under.position.set(0, -1, 3);
+      scene.add(under);
+
+      // ── Hellmann's label texture (blue cartouche on cream) ──
+      function makeLabelTexture() {
+        var c = document.createElement("canvas");
+        c.width = 2048; c.height = 1024;
+        var ctx = c.getContext("2d");
+        var W = 2048, H = 1024;
+
+        // Cream background
+        ctx.fillStyle = "#faf3e0";
+        ctx.fillRect(0, 0, W, H);
+
+        // Subtle warm paper grain
+        ctx.fillStyle = "rgba(200,180,140,0.06)";
+        for (var i = 0; i < 800; i++) {
+          var gx = Math.random() * W, gy = Math.random() * H;
+          ctx.fillRect(gx, gy, Math.random() * 3 + 1, Math.random() * 3 + 1);
+        }
+
+        // ── Blue cartouche (the signature rounded-rect banner) ──
+        // Draw it twice — once for a front-facing label, offset so it repeats around the cylinder
+        for (var rep = 0; rep < 2; rep++) {
+          var ox = rep * W;
+          ctx.save();
+          ctx.translate(ox, 0);
+
+          // Cartouche shape — rounded rectangle
+          var cx = W / 2, cy = H * 0.48;
+          var cw = W * 0.42, ch = H * 0.72;
+          var cr = 30;
+          ctx.beginPath();
+          ctx.moveTo(cx - cw / 2 + cr, cy - ch / 2);
+          ctx.lineTo(cx + cw / 2 - cr, cy - ch / 2);
+          ctx.quadraticCurveTo(cx + cw / 2, cy - ch / 2, cx + cw / 2, cy - ch / 2 + cr);
+          ctx.lineTo(cx + cw / 2, cy + ch / 2 - cr);
+          ctx.quadraticCurveTo(cx + cw / 2, cy + ch / 2, cx + cw / 2 - cr, cy + ch / 2);
+          ctx.lineTo(cx - cw / 2 + cr, cy + ch / 2);
+          ctx.quadraticCurveTo(cx - cw / 2, cy + ch / 2, cx - cw / 2, cy + ch / 2 - cr);
+          ctx.lineTo(cx - cw / 2, cy - ch / 2 + cr);
+          ctx.quadraticCurveTo(cx - cw / 2, cy - ch / 2, cx - cw / 2 + cr, cy - ch / 2);
+          ctx.closePath();
+          ctx.fillStyle = "#163a6b";
+          ctx.fill();
+
+          // Gold border on cartouche
+          ctx.lineWidth = 5;
+          ctx.strokeStyle = "#c9a84c";
+          ctx.stroke();
+
+          // Inner gold border
+          var inset = 12;
+          ctx.beginPath();
+          ctx.moveTo(cx - cw / 2 + cr + inset, cy - ch / 2 + inset);
+          ctx.lineTo(cx + cw / 2 - cr - inset, cy - ch / 2 + inset);
+          ctx.quadraticCurveTo(cx + cw / 2 - inset, cy - ch / 2 + inset, cx + cw / 2 - inset, cy - ch / 2 + cr + inset);
+          ctx.lineTo(cx + cw / 2 - inset, cy + ch / 2 - cr - inset);
+          ctx.quadraticCurveTo(cx + cw / 2 - inset, cy + ch / 2 - inset, cx + cw / 2 - cr - inset, cy + ch / 2 - inset);
+          ctx.lineTo(cx - cw / 2 + cr + inset, cy + ch / 2 - inset);
+          ctx.quadraticCurveTo(cx - cw / 2 + inset, cy + ch / 2 - inset, cx - cw / 2 + inset, cy + ch / 2 - cr - inset);
+          ctx.lineTo(cx - cw / 2 + inset, cy - ch / 2 + cr + inset);
+          ctx.quadraticCurveTo(cx - cw / 2 + inset, cy - ch / 2 + inset, cx - cw / 2 + cr + inset, cy - ch / 2 + inset);
+          ctx.closePath();
+          ctx.lineWidth = 2;
+          ctx.strokeStyle = "rgba(201,168,76,0.5)";
+          ctx.stroke();
+
+          // ── Blue ribbon bow at top ──
+          ctx.fillStyle = "#1e4f8f";
+          // Left ribbon tail
+          ctx.beginPath();
+          ctx.moveTo(cx - 60, cy - ch / 2 - 5);
+          ctx.quadraticCurveTo(cx - 100, cy - ch / 2 - 40, cx - 80, cy - ch / 2 - 55);
+          ctx.quadraticCurveTo(cx - 50, cy - ch / 2 - 35, cx - 20, cy - ch / 2 - 5);
+          ctx.fill();
+          // Right ribbon tail
+          ctx.beginPath();
+          ctx.moveTo(cx + 60, cy - ch / 2 - 5);
+          ctx.quadraticCurveTo(cx + 100, cy - ch / 2 - 40, cx + 80, cy - ch / 2 - 55);
+          ctx.quadraticCurveTo(cx + 50, cy - ch / 2 - 35, cx + 20, cy - ch / 2 - 5);
+          ctx.fill();
+          // Center knot
+          ctx.beginPath();
+          ctx.arc(cx, cy - ch / 2 - 5, 18, 0, Math.PI * 2);
+          ctx.fillStyle = "#163a6b";
+          ctx.fill();
+          ctx.strokeStyle = "#c9a84c";
+          ctx.lineWidth = 2;
+          ctx.stroke();
+
+          // ── Text ──
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+
+          // "HELLMANN'S" — large serif
+          ctx.fillStyle = "#ffffff";
+          ctx.font = "bold 110px 'Georgia', serif";
+          ctx.fillText("HELLMANN'S", cx, cy - ch * 0.18);
+
+          // Gold separator line
+          ctx.strokeStyle = "#c9a84c";
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.moveTo(cx - 200, cy - ch * 0.06);
+          ctx.lineTo(cx + 200, cy - ch * 0.06);
+          ctx.stroke();
+
+          // "REAL" — small caps
+          ctx.fillStyle = "#c9a84c";
+          ctx.font = "bold 44px 'Georgia', serif";
+          ctx.fillText("REAL", cx, cy + ch * 0.04);
+
+          // "MAYONNAISE" — large
+          ctx.fillStyle = "#ffffff";
+          ctx.font = "bold 72px 'Georgia', serif";
+          ctx.fillText("MAYONNAISE", cx, cy + ch * 0.18);
+
+          // Gold separator line below
+          ctx.strokeStyle = "#c9a84c";
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.moveTo(cx - 200, cy + ch * 0.27);
+          ctx.lineTo(cx + 200, cy + ch * 0.27);
+          ctx.stroke();
+
+          // "BRING OUT THE BEST" tagline
+          ctx.fillStyle = "rgba(255,255,255,0.7)";
+          ctx.font = "italic 30px 'Georgia', serif";
+          ctx.fillText("BRING OUT THE BEST", cx, cy + ch * 0.34);
+
+          ctx.restore();
+        }
+
+        var tex = new THREE.CanvasTexture(c);
+        tex.wrapS = THREE.RepeatWrapping;
+        return tex;
+      }
+
+      // ── Cap top texture (matte blue with subtle highlight) ──
+      function makeCapTexture() {
+        var c = document.createElement("canvas");
+        c.width = 512; c.height = 512;
+        var ctx = c.getContext("2d");
+        var grad = ctx.createRadialGradient(200, 180, 20, 256, 256, 256);
+        grad.addColorStop(0, "#2a5a9a");
+        grad.addColorStop(0.5, "#1a3a6b");
+        grad.addColorStop(1, "#0e2548");
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, 512, 512);
+        return new THREE.CanvasTexture(c);
+      }
+
+      var jarGroup = new THREE.Group();
+
+      // ── Jar body — wide, squat Hellmann's shape (lathe profile) ──
+      // Proportions: ~1.25:1 height-to-width, wide mouth (~75% of body)
+      var bodyR = 1.2;  // wide body radius
+      var pts = [];
+      // Bottom
+      pts.push(new THREE.Vector2(0, 0));
+      pts.push(new THREE.Vector2(bodyR * 0.88, 0));
+      // Bottom edge radius
+      pts.push(new THREE.Vector2(bodyR * 0.95, 0.03));
+      pts.push(new THREE.Vector2(bodyR * 0.99, 0.10));
+      pts.push(new THREE.Vector2(bodyR, 0.18));
+      // Straight cylindrical body
+      pts.push(new THREE.Vector2(bodyR, 0.4));
+      pts.push(new THREE.Vector2(bodyR, 0.8));
+      pts.push(new THREE.Vector2(bodyR, 1.15));
+      // Gentle shoulder — subtle inward taper (top 15-20%)
+      pts.push(new THREE.Vector2(bodyR * 0.99, 1.22));
+      pts.push(new THREE.Vector2(bodyR * 0.96, 1.30));
+      pts.push(new THREE.Vector2(bodyR * 0.91, 1.38));
+      pts.push(new THREE.Vector2(bodyR * 0.84, 1.44));
+      // Neck — wide mouth (75% of body)
+      pts.push(new THREE.Vector2(bodyR * 0.76, 1.48));
+      pts.push(new THREE.Vector2(bodyR * 0.72, 1.50));
+      // Thread area / lip
+      pts.push(new THREE.Vector2(bodyR * 0.73, 1.52));
+      pts.push(new THREE.Vector2(bodyR * 0.74, 1.55));
+      pts.push(new THREE.Vector2(bodyR * 0.72, 1.58));
+      pts.push(new THREE.Vector2(0, 1.58));
+
+      var jarGeo = new THREE.LatheGeometry(pts, 64);
+      var jarMat = new THREE.MeshPhysicalMaterial({
+        color: 0xfcf5e5,
+        transparent: true,
+        opacity: 0.3,
+        roughness: 0.05,
+        metalness: 0.0,
+        side: THREE.DoubleSide
+      });
+      jarGroup.add(new THREE.Mesh(jarGeo, jarMat));
+
+      // ── Mayo fill inside ──
+      var fillPts = [];
+      fillPts.push(new THREE.Vector2(0, 0.02));
+      fillPts.push(new THREE.Vector2(bodyR * 0.85, 0.02));
+      fillPts.push(new THREE.Vector2(bodyR * 0.93, 0.10));
+      fillPts.push(new THREE.Vector2(bodyR * 0.95, 0.18));
+      fillPts.push(new THREE.Vector2(bodyR * 0.95, 0.8));
+      fillPts.push(new THREE.Vector2(bodyR * 0.95, 1.10));
+      fillPts.push(new THREE.Vector2(bodyR * 0.90, 1.25));
+      fillPts.push(new THREE.Vector2(bodyR * 0.82, 1.35));
+      // Mayo surface — slightly below neck
+      fillPts.push(new THREE.Vector2(bodyR * 0.70, 1.40));
+      fillPts.push(new THREE.Vector2(0, 1.40));
+
+      var fillGeo = new THREE.LatheGeometry(fillPts, 64);
+      var fillMat = new THREE.MeshStandardMaterial({
+        color: 0xfcf0c0,
+        roughness: 0.95,
+        metalness: 0.0
+      });
+      jarGroup.add(new THREE.Mesh(fillGeo, fillMat));
+
+      // ── Label wrap (cylinder matching body radius) ──
+      var labelGeo = new THREE.CylinderGeometry(bodyR + 0.005, bodyR + 0.005, 0.95, 64, 1, true);
+      var labelMat = new THREE.MeshStandardMaterial({
+        map: makeLabelTexture(),
+        roughness: 0.55,
+        metalness: 0.0
+      });
+      var labelMesh = new THREE.Mesh(labelGeo, labelMat);
+      labelMesh.position.y = 0.70;
+      jarGroup.add(labelMesh);
+
+      // ── Flat screw-on cap — wide, low-profile, matte blue ──
+      var capR = bodyR * 0.76;  // matches neck opening
+      var capH = 0.18;          // low-profile flat cap
+      var capTex = makeCapTexture();
+
+      var capMat = new THREE.MeshStandardMaterial({
+        map: capTex,
+        roughness: 0.7,   // matte finish
+        metalness: 0.05
+      });
+
+      // Cap body — flat cylinder
+      var capGeo = new THREE.CylinderGeometry(capR, capR * 0.98, capH, 48);
+      var capMesh = new THREE.Mesh(capGeo, capMat);
+      capMesh.position.y = 1.58 + capH / 2;
+      jarGroup.add(capMesh);
+
+      // Flat cap top disc (no dome — Hellmann's has a flat lid)
+      var topGeo = new THREE.CircleGeometry(capR, 48);
+      var topMesh = new THREE.Mesh(topGeo, capMat);
+      topMesh.rotation.x = -Math.PI / 2;
+      topMesh.position.y = 1.58 + capH;
+      jarGroup.add(topMesh);
+
+      // Cap grip ridges — vertical knurling around the cap edge
+      var ridgeMat = new THREE.MeshStandardMaterial({ color: 0x0e2548, roughness: 0.8 });
+      for (var i = 0; i < 48; i++) {
+        var ang = (i / 48) * Math.PI * 2;
+        var ridgeGeo = new THREE.BoxGeometry(0.015, capH * 0.85, 0.04);
+        var ridge = new THREE.Mesh(ridgeGeo, ridgeMat);
+        ridge.position.set(
+          Math.cos(ang) * (capR + 0.005),
+          1.58 + capH / 2,
+          Math.sin(ang) * (capR + 0.005)
+        );
+        ridge.rotation.y = -ang;
+        jarGroup.add(ridge);
+      }
+
+      // Slight rim at cap base (thread ring)
+      var rimGeo = new THREE.TorusGeometry(capR, 0.02, 8, 48);
+      var rimMesh = new THREE.Mesh(rimGeo, ridgeMat);
+      rimMesh.rotation.x = Math.PI / 2;
+      rimMesh.position.y = 1.58;
+      jarGroup.add(rimMesh);
+
+      // Center jar in scene
+      jarGroup.position.y = -0.85;
+      scene.add(jarGroup);
+
+      // ── Animation loop ──
+      var running = true;
+      function animate() {
+        if (!running) return;
+        requestAnimationFrame(animate);
+        jarGroup.rotation.y += 0.008;
+        renderer.render(scene, camera);
+      }
+
+      // Pause when off-screen
+      var mayoObs = new IntersectionObserver(function(entries) {
+        running = entries[0].isIntersecting;
+        if (running) animate();
+      }, { threshold: 0.1 });
+      mayoObs.observe(canvas);
+
+      animate();
+    }
+
+    // ═══════════════════════════════════════════════
     // BOOT
     // ═══════════════════════════════════════════════
 
-    function init() { initCanvases(); initReveal(); initBanner(); initScrollIndicator(); }
+    function init() { initCanvases(); initReveal(); initBanner(); initScrollIndicator(); initMayoJar(); }
     if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
     else init();
   })();
