@@ -8,11 +8,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700;800&display=swap" rel="stylesheet">
   <style>
-    /* ── Reset & Base ── */
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
     html {
-      scroll-behavior: smooth;
+      scroll-snap-type: y mandatory;
       scrollbar-color: #45475a #1e1e2e;
     }
 
@@ -24,35 +23,20 @@
       line-height: 1.6;
     }
 
-    /* ── Catppuccin Mocha Palette ── */
     :root {
-      --base: #1e1e2e;
-      --mantle: #181825;
-      --crust: #11111b;
-      --surface0: #313244;
-      --surface1: #45475a;
-      --surface2: #585b70;
-      --text: #cdd6f4;
-      --subtext0: #a6adc8;
-      --subtext1: #bac2de;
-      --lavender: #b4befe;
-      --blue: #89b4fa;
-      --sapphire: #74c7ec;
-      --teal: #94e2d5;
-      --green: #a6e3a1;
-      --yellow: #f9e2af;
-      --peach: #fab387;
-      --maroon: #eba0ac;
-      --red: #f38ba8;
-      --mauve: #cba6f7;
-      --pink: #f5c2e7;
-      --flamingo: #f2cdcd;
-      --rosewater: #f5e0dc;
+      --base: #1e1e2e; --mantle: #181825; --crust: #11111b;
+      --surface0: #313244; --surface1: #45475a; --surface2: #585b70;
+      --text: #cdd6f4; --subtext0: #a6adc8; --subtext1: #bac2de;
+      --lavender: #b4befe; --blue: #89b4fa; --sapphire: #74c7ec;
+      --teal: #94e2d5; --green: #a6e3a1; --yellow: #f9e2af;
+      --peach: #fab387; --maroon: #eba0ac; --red: #f38ba8;
+      --mauve: #cba6f7; --pink: #f5c2e7;
     }
 
-    /* ── Scroll Sections ── */
+    /* ── Snap Sections ── */
     .section {
       min-height: 100vh;
+      scroll-snap-align: start;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -61,21 +45,28 @@
       position: relative;
     }
 
-    /* ── Reveal Animation ── */
+    /* ── Reveal ── */
     .reveal {
       opacity: 0;
-      transform: translateY(60px);
-      transition: opacity 0.8s ease, transform 0.8s ease;
+      transform: translateY(40px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
     }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-delay-1 { transition-delay: 0.15s; }
+    .reveal-delay-2 { transition-delay: 0.3s; }
+    .reveal-delay-3 { transition-delay: 0.45s; }
+    .reveal-delay-4 { transition-delay: 0.6s; }
 
-    .reveal.visible {
+    /* ── Greg Slide-in ── */
+    .greg-slide {
+      opacity: 0;
+      transform: translateX(-120px) rotate(-10deg);
+      transition: opacity 0.6s ease, transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .greg-slide.visible {
       opacity: 1;
-      transform: translateY(0);
+      transform: translateX(0) rotate(0deg);
     }
-
-    .reveal-delay-1 { transition-delay: 0.2s; }
-    .reveal-delay-2 { transition-delay: 0.4s; }
-    .reveal-delay-3 { transition-delay: 0.6s; }
 
     /* ── Typography ── */
     .title-huge {
@@ -84,482 +75,410 @@
       letter-spacing: -0.03em;
       line-height: 1;
       text-align: center;
+      background: linear-gradient(135deg, var(--blue) 0%, var(--mauve) 50%, var(--pink) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
     }
-
-    .title-big {
-      font-size: clamp(1.5rem, 4vw, 3rem);
-      font-weight: 700;
-      text-align: center;
-      line-height: 1.3;
-    }
-
     .subtitle {
       font-size: clamp(1rem, 2.5vw, 1.4rem);
       font-weight: 400;
       color: var(--subtext0);
       text-align: center;
-      max-width: 600px;
     }
-
-    .quote-block {
-      font-size: clamp(1.1rem, 3vw, 1.8rem);
-      font-weight: 700;
-      text-align: center;
-      max-width: 700px;
-      line-height: 1.4;
-      padding: 2rem;
-      border-left: 4px solid;
-      background: rgba(30, 30, 46, 0.8);
-      border-radius: 0 12px 12px 0;
-    }
-
-    .emotion-label {
-      font-size: 0.7rem;
-      font-weight: 700;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      opacity: 0.7;
-      margin-bottom: 1rem;
-    }
-
     .narrative {
-      font-size: clamp(1rem, 2vw, 1.3rem);
+      font-size: clamp(1rem, 2vw, 1.25rem);
       color: var(--subtext1);
       text-align: center;
       max-width: 550px;
       line-height: 1.7;
     }
-
-    /* ── Emotion Colors ── */
-    .color-sassy { color: var(--mauve); border-color: var(--mauve); }
-    .color-supportive { color: var(--green); border-color: var(--green); }
-    .color-angry { color: var(--red); border-color: var(--red); }
-    .color-hungry { color: var(--pink); border-color: var(--pink); }
-    .color-creepy { color: var(--red); border-color: var(--red); }
-    .color-chaotic { color: var(--peach); border-color: var(--peach); }
-    .color-sad { color: var(--blue); border-color: var(--blue); }
-    .color-tired { color: var(--surface2); border-color: var(--surface2); }
-    .color-excited { color: var(--yellow); border-color: var(--yellow); }
-    .color-chill { color: var(--sapphire); border-color: var(--sapphire); }
-    .color-conspiratorial { color: var(--yellow); border-color: var(--yellow); }
-    .color-slaphappy { color: var(--teal); border-color: var(--teal); }
-    .color-lazy { color: var(--subtext0); border-color: var(--subtext0); }
-    .color-fat { color: var(--peach); border-color: var(--peach); }
-    .color-nostalgic { color: var(--mauve); border-color: var(--mauve); }
-    .color-homesick { color: var(--blue); border-color: var(--blue); }
-
-    /* ── Hero Section ── */
-    .hero {
-      background: radial-gradient(ellipse at 50% 80%, #1e1e2e 0%, #11111b 70%);
+    .title-big {
+      font-size: clamp(1.4rem, 3.5vw, 2.5rem);
+      font-weight: 700;
+      text-align: center;
+      line-height: 1.3;
     }
 
-    .hero .title-huge {
-      background: linear-gradient(135deg, var(--blue) 0%, var(--mauve) 50%, var(--pink) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .drip {
-      font-size: 0.8rem;
-      color: var(--surface2);
-      margin-top: 2rem;
-      animation: drip-pulse 2s ease-in-out infinite;
-    }
-
-    @keyframes drip-pulse {
-      0%, 100% { opacity: 0.4; }
-      50% { opacity: 0.8; }
-    }
-
-    /* ── Octopus Canvas ── */
-    .octopus-wrap {
-      position: relative;
+    /* ── Greg + Bubble Layout ── */
+    .greg-row {
       display: flex;
       align-items: center;
-      justify-content: center;
+      gap: 1.5rem;
+      max-width: 750px;
     }
 
     .octopus-canvas {
       image-rendering: pixelated;
       image-rendering: crisp-edges;
+      flex-shrink: 0;
     }
 
-    /* ── Dividers ── */
-    .divider {
-      width: 60px;
-      height: 3px;
-      border-radius: 3px;
-      margin: 2rem auto;
-    }
-
-    /* ── Greg Appears Section ── */
-    .greg-appears {
-      background: radial-gradient(ellipse at 50% 30%, rgba(203, 166, 247, 0.05) 0%, transparent 60%);
-    }
-
-    .appears-label {
-      font-size: clamp(0.9rem, 2vw, 1.1rem);
-      font-weight: 700;
-      color: var(--mauve);
-      letter-spacing: 0.1em;
-    }
-
-    /* ── Emotion Sections ── */
-    .emotion-section {
+    /* ── Chat Bubble ── */
+    .chat-bubble {
       position: relative;
-    }
-
-    .emotion-section::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      opacity: 0.03;
-      pointer-events: none;
-    }
-
-    /* ── Final Banner (cycling animation) ── */
-    #greg-banner {
       background: var(--base);
       border: 2px solid var(--surface0);
-      border-radius: 12px;
-      overflow: hidden;
-      width: 100%;
-      max-width: 800px;
+      border-radius: 16px;
+      padding: 1.2rem 1.5rem;
+      max-width: 450px;
+      min-width: 200px;
     }
-
-    .greg-banner-inner {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 1.5rem;
-      padding: 1.5rem 2rem;
-      min-height: 180px;
+    .chat-bubble::before {
+      content: '';
+      position: absolute;
+      left: -12px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 0; height: 0;
+      border-top: 10px solid transparent;
+      border-bottom: 10px solid transparent;
+      border-right: 12px solid var(--surface0);
     }
-
-    .greg-banner-text {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      min-width: 0;
-      gap: 0.5rem;
+    .chat-bubble::after {
+      content: '';
+      position: absolute;
+      left: -9px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 0; height: 0;
+      border-top: 8px solid transparent;
+      border-bottom: 8px solid transparent;
+      border-right: 10px solid var(--base);
     }
-
-    .greg-banner-mode {
-      font-size: 0.7rem;
+    .chat-bubble .emotion-label {
+      font-size: 0.65rem;
       font-weight: 700;
       letter-spacing: 0.15em;
       text-transform: uppercase;
       opacity: 0.7;
-      color: var(--blue);
+      margin-bottom: 0.5rem;
+      display: block;
     }
-
-    .greg-banner-quote {
-      font-size: clamp(0.85rem, 2vw, 1rem);
+    .chat-bubble .quote-text {
+      font-size: clamp(0.85rem, 2vw, 1.05rem);
       font-weight: 600;
-      color: var(--text);
-      line-height: 1.4;
-      min-height: 2.8em;
-      display: flex;
-      align-items: center;
+      line-height: 1.5;
     }
 
-    .greg-banner-quote::after {
-      content: "\2588";
-      animation: blink 0.7s step-end infinite;
-      color: var(--blue);
-      margin-left: 2px;
+    /* ── Emotion Colors ── */
+    .color-sassy { color: var(--mauve); }
+    .color-supportive { color: var(--green); }
+    .color-angry { color: var(--red); }
+    .color-hungry { color: var(--pink); }
+    .color-creepy { color: var(--red); }
+    .color-chaotic { color: var(--peach); }
+    .color-sad { color: var(--blue); }
+    .color-tired { color: var(--surface2); }
+    .color-excited { color: var(--yellow); }
+    .color-chill { color: var(--sapphire); }
+    .color-conspiratorial { color: var(--yellow); }
+
+    .bubble-sassy { border-color: var(--mauve); }
+    .bubble-sassy::before { border-right-color: var(--mauve); }
+    .bubble-supportive { border-color: var(--green); }
+    .bubble-supportive::before { border-right-color: var(--green); }
+    .bubble-angry { border-color: var(--red); }
+    .bubble-angry::before { border-right-color: var(--red); }
+    .bubble-hungry { border-color: var(--pink); }
+    .bubble-hungry::before { border-right-color: var(--pink); }
+    .bubble-creepy { border-color: var(--red); }
+    .bubble-creepy::before { border-right-color: var(--red); }
+    .bubble-chaotic { border-color: var(--peach); }
+    .bubble-chaotic::before { border-right-color: var(--peach); }
+
+    /* ── Scroll Indicator ── */
+    .drip {
+      font-size: 0.8rem; color: var(--surface2); margin-top: 2rem;
+      animation: drip-pulse 2s ease-in-out infinite;
     }
+    @keyframes drip-pulse { 0%,100%{opacity:0.4} 50%{opacity:0.8} }
 
-    @keyframes blink {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0; }
-    }
-
-    /* Banner emotion colors */
-    .mode-sassy { color: var(--mauve) !important; }
-    .mode-supportive { color: var(--green) !important; }
-    .mode-angry { color: var(--red) !important; }
-    .mode-conspiratorial { color: var(--yellow) !important; }
-    .mode-sad { color: var(--blue) !important; }
-    .mode-chaotic { color: var(--peach) !important; }
-    .mode-hungry { color: var(--pink) !important; }
-    .mode-tired { color: var(--surface2) !important; }
-    .mode-slaphappy { color: var(--teal) !important; }
-    .mode-lazy { color: var(--subtext0) !important; }
-    .mode-fat { color: var(--peach) !important; }
-    .mode-chill { color: var(--sapphire) !important; }
-    .mode-creepy { color: var(--red) !important; }
-    .mode-excited { color: var(--yellow) !important; }
-    .mode-nostalgic { color: var(--mauve) !important; }
-    .mode-homesick { color: var(--blue) !important; }
-
-    /* ── Scroll down indicator ── */
     .scroll-indicator {
-      position: fixed;
-      bottom: 2rem;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 100;
-      opacity: 0.4;
-      transition: opacity 0.5s;
-      pointer-events: none;
+      position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%);
+      z-index: 100; opacity: 0.4; transition: opacity 0.5s; pointer-events: none;
     }
-
     .scroll-indicator.hidden { opacity: 0; }
-
     .scroll-arrow {
-      width: 24px;
-      height: 24px;
-      border-right: 2px solid var(--subtext0);
-      border-bottom: 2px solid var(--subtext0);
-      transform: rotate(45deg);
-      animation: bounce-arrow 1.5s ease-in-out infinite;
+      width: 20px; height: 20px;
+      border-right: 2px solid var(--subtext0); border-bottom: 2px solid var(--subtext0);
+      transform: rotate(45deg); animation: bounce-arrow 1.5s ease-in-out infinite;
     }
+    @keyframes bounce-arrow { 0%,100%{transform:rotate(45deg) translateY(0)} 50%{transform:rotate(45deg) translateY(8px)} }
 
-    @keyframes bounce-arrow {
-      0%, 100% { transform: rotate(45deg) translateY(0); }
-      50% { transform: rotate(45deg) translateY(8px); }
-    }
+    /* ── Glow Backgrounds ── */
+    .glow-sassy { background: radial-gradient(ellipse at 50% 50%, rgba(203,166,247,0.04) 0%, transparent 60%); }
+    .glow-supportive { background: radial-gradient(ellipse at 50% 50%, rgba(166,227,161,0.04) 0%, transparent 60%); }
+    .glow-angry { background: radial-gradient(ellipse at 50% 50%, rgba(243,139,168,0.04) 0%, transparent 60%); }
+    .glow-hungry { background: radial-gradient(ellipse at 50% 50%, rgba(245,194,231,0.04) 0%, transparent 60%); }
+    .glow-creepy { background: radial-gradient(ellipse at 50% 50%, rgba(243,139,168,0.04) 0%, transparent 60%); }
+    .glow-chaotic { background: radial-gradient(ellipse at 50% 50%, rgba(250,179,135,0.04) 0%, transparent 60%); }
 
-    /* ── Final CTA ── */
-    .final-section {
-      background: radial-gradient(ellipse at 50% 50%, rgba(137, 180, 250, 0.04) 0%, transparent 70%);
-      padding-bottom: 6rem;
+    /* ── Final Banner ── */
+    #greg-banner {
+      background: var(--base); border: 2px solid var(--surface0);
+      border-radius: 12px; overflow: hidden; width: 100%; max-width: 800px;
     }
+    .greg-banner-inner {
+      display: flex; align-items: center; justify-content: center;
+      gap: 1.5rem; padding: 1.5rem 2rem; min-height: 180px;
+    }
+    .greg-banner-text {
+      flex: 1; display: flex; flex-direction: column; align-items: center;
+      justify-content: center; text-align: center; min-width: 0; gap: 0.5rem;
+    }
+    .greg-banner-mode {
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 0.15em;
+      text-transform: uppercase; opacity: 0.7; color: var(--blue);
+    }
+    .greg-banner-quote {
+      font-size: clamp(0.85rem, 2vw, 1rem); font-weight: 600;
+      color: var(--text); line-height: 1.4; min-height: 2.8em;
+      display: flex; align-items: center;
+    }
+    .greg-banner-quote::after {
+      content: "\2588"; animation: blink 0.7s step-end infinite;
+      color: var(--blue); margin-left: 2px;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+    .mode-sassy{color:var(--mauve)!important} .mode-supportive{color:var(--green)!important}
+    .mode-angry{color:var(--red)!important} .mode-conspiratorial{color:var(--yellow)!important}
+    .mode-sad{color:var(--blue)!important} .mode-chaotic{color:var(--peach)!important}
+    .mode-hungry{color:var(--pink)!important} .mode-tired{color:var(--surface2)!important}
+    .mode-slaphappy{color:var(--teal)!important} .mode-lazy{color:var(--subtext0)!important}
+    .mode-fat{color:var(--peach)!important} .mode-chill{color:var(--sapphire)!important}
+    .mode-creepy{color:var(--red)!important} .mode-excited{color:var(--yellow)!important}
+    .mode-nostalgic{color:var(--mauve)!important} .mode-homesick{color:var(--blue)!important}
 
     .greg-description {
-      max-width: 600px;
-      text-align: center;
-      line-height: 1.8;
-      color: var(--subtext1);
-      font-size: clamp(0.95rem, 2vw, 1.15rem);
+      max-width: 600px; text-align: center; line-height: 1.8;
+      color: var(--subtext1); font-size: clamp(0.95rem, 2vw, 1.15rem);
     }
+    .greg-description strong { color: var(--text); }
 
-    .greg-description strong {
-      color: var(--text);
+    /* ── Appears Label ── */
+    .appears-label {
+      font-size: clamp(1rem, 2.5vw, 1.3rem); font-weight: 700;
+      color: var(--mauve); letter-spacing: 0.1em;
     }
+    .awoke-text { color: var(--red); font-weight: 600; }
 
     /* ── Responsive ── */
     @media (max-width: 768px) {
+      .greg-row { flex-direction: column; gap: 1rem; }
+      .chat-bubble::before, .chat-bubble::after { display: none; }
+      .chat-bubble { border-radius: 12px; }
       .greg-banner-inner { gap: 0.5rem; padding: 1rem; }
       .greg-banner-canvas-right { display: none; }
       .section { padding: 3rem 1.5rem; }
     }
-
     @media (max-width: 480px) {
       .greg-banner-canvas { display: none; }
-      .greg-banner-inner { padding: 1rem; }
-      .quote-block { padding: 1.5rem 1rem; }
     }
-
-    /* ── Glow effects on emotion sections ── */
-    .glow-sassy { background: radial-gradient(ellipse at 50% 50%, rgba(203, 166, 247, 0.04) 0%, transparent 60%); }
-    .glow-supportive { background: radial-gradient(ellipse at 50% 50%, rgba(166, 227, 161, 0.04) 0%, transparent 60%); }
-    .glow-angry { background: radial-gradient(ellipse at 50% 50%, rgba(243, 139, 168, 0.04) 0%, transparent 60%); }
-    .glow-hungry { background: radial-gradient(ellipse at 50% 50%, rgba(245, 194, 231, 0.04) 0%, transparent 60%); }
-    .glow-creepy { background: radial-gradient(ellipse at 50% 50%, rgba(243, 139, 168, 0.04) 0%, transparent 60%); }
   </style>
 </head>
 <body>
 
-  <!-- Scroll indicator -->
-  <div class="scroll-indicator" id="scroll-indicator">
-    <div class="scroll-arrow"></div>
-  </div>
+  <div class="scroll-indicator" id="scroll-indicator"><div class="scroll-arrow"></div></div>
 
-  <!-- ════════════════════════════════════════════ -->
-  <!-- SECTION 1: Hero — "Wet Greg?" -->
-  <!-- ════════════════════════════════════════════ -->
-  <section class="section hero">
-    <div class="reveal">
-      <h1 class="title-huge">WET GREG</h1>
-    </div>
-    <div class="reveal reveal-delay-1" style="margin-top: 1.5rem;">
-      <p class="subtitle">who is wet greg?</p>
-    </div>
-    <div class="reveal reveal-delay-2" style="margin-top: 2rem;">
-      <p class="narrative">well he's an octopus and he's... wet</p>
-    </div>
-    <div class="reveal reveal-delay-3" style="margin-top: 1.5rem;">
-      <p class="narrative" style="color: var(--surface2); font-size: 0.9rem;">
-        that's all you need to know.<br>
-        stop asking questions — <em>he might hear you.</em>
+  <!-- ═══ 1: HERO ═══ -->
+  <section class="section" style="background:radial-gradient(ellipse at 50% 80%,#1e1e2e 0%,#11111b 70%)">
+    <div class="reveal"><h1 class="title-huge">WET GREG</h1></div>
+    <div class="reveal reveal-delay-1" style="margin-top:1.5rem"><p class="subtitle">who is wet greg?</p></div>
+    <div class="reveal reveal-delay-2" style="margin-top:2rem"><p class="narrative">well he's an octopus and he's... wet</p></div>
+    <div class="reveal reveal-delay-3" style="margin-top:1.5rem">
+      <p class="narrative">
+        that's all you need to know.<br>stop asking questions — <em>he might hear you.</em>
       </p>
     </div>
-    <div class="drip reveal reveal-delay-3">&#9660; scroll down &#9660;</div>
+    <div class="drip reveal reveal-delay-4">&#9660; scroll down &#9660;</div>
   </section>
 
-  <!-- ════════════════════════════════════════════ -->
-  <!-- SECTION 2: Greg Appears -->
-  <!-- ════════════════════════════════════════════ -->
-  <section class="section greg-appears">
-    <div class="reveal">
-      <p class="appears-label">* GREG APPEARS *</p>
-    </div>
-    <div class="reveal reveal-delay-1" style="margin-top: 2rem;">
-      <div class="octopus-wrap">
-        <canvas class="octopus-canvas" id="greg-hero" aria-hidden="true"></canvas>
+  <!-- ═══ 2: GREG APPEARS — Sassy ═══ -->
+  <section class="section glow-sassy">
+    <div class="greg-row">
+      <div class="greg-slide">
+        <canvas class="octopus-canvas" data-emotion="normal" data-color="#cba6f7" data-scale="3" aria-hidden="true"></canvas>
+      </div>
+      <div class="reveal reveal-delay-2">
+        <div class="chat-bubble bubble-sassy">
+          <span class="emotion-label color-sassy">~ SASSY GREG ~</span>
+          <span class="quote-text color-sassy">"WIFI IS JUST SPICY AIR."</span>
+        </div>
       </div>
     </div>
-    <div class="reveal reveal-delay-2" style="margin-top: 2rem;">
-      <div class="quote-block color-sassy" style="border-color: var(--mauve);">
-        <span class="emotion-label color-sassy">~ SASSY GREG ~</span><br>
-        "WIFI IS JUST SPICY AIR."
-      </div>
-    </div>
-    <div class="reveal reveal-delay-3" style="margin-top: 2rem;">
-      <p class="narrative" style="color: var(--red); font-weight: 600;">you've done it now. you awoke greg.</p>
+    <div class="reveal reveal-delay-3" style="margin-top:2rem">
+      <p class="narrative awoke-text">you've done it now. you awoke greg.</p>
     </div>
   </section>
 
-  <!-- ════════════════════════════════════════════ -->
-  <!-- SECTION 3: Unhinged / Weird -->
-  <!-- ════════════════════════════════════════════ -->
-  <section class="section emotion-section glow-sassy">
-    <div class="reveal">
-      <div class="quote-block color-sassy">
-        <span class="emotion-label color-sassy">~ CHAOTIC GREG ~</span><br>
-        "I JUST SNEEZED AND I THINK I SAW GOD."
+  <!-- ═══ 3: CHAOTIC / WEIRD ═══ -->
+  <section class="section glow-chaotic">
+    <div class="greg-row">
+      <div class="greg-slide">
+        <canvas class="octopus-canvas" data-emotion="chaotic" data-color="#fab387" data-scale="3" aria-hidden="true"></canvas>
+      </div>
+      <div class="reveal reveal-delay-1">
+        <div class="chat-bubble bubble-chaotic">
+          <span class="emotion-label color-chaotic">~ CHAOTIC GREG ~</span>
+          <span class="quote-text color-chaotic">"I JUST SNEEZED AND I THINK I SAW GOD."</span>
+        </div>
       </div>
     </div>
-    <div class="reveal reveal-delay-1" style="margin-top: 2rem;">
+    <div class="reveal reveal-delay-2" style="margin-top:2rem">
       <p class="narrative">
         Greg is... <em>special</em>. He has a habit of saying weird things.
-        Sometimes he can get a bit <strong style="color: var(--mauve);">unhinged</strong>.
+        Sometimes he can get a bit <strong style="color:var(--peach)">unhinged</strong>.
       </p>
     </div>
-    <div class="reveal reveal-delay-2" style="margin-top: 2rem;">
-      <div class="quote-block color-conspiratorial" style="font-size: clamp(0.9rem, 2vw, 1.2rem);">
-        <span class="emotion-label color-conspiratorial">~ CONSPIRATORIAL GREG ~</span><br>
-        "BIRDS ARENT REAL. THEY CHARGE ON POWER LINES."
+    <div class="greg-row" style="margin-top:2rem">
+      <div class="greg-slide">
+        <canvas class="octopus-canvas" data-emotion="weird" data-color="#f9e2af" data-scale="2" aria-hidden="true"></canvas>
+      </div>
+      <div class="reveal reveal-delay-3">
+        <div class="chat-bubble bubble-chaotic" style="border-color:var(--yellow)">
+          <span class="emotion-label color-conspiratorial">~ CONSPIRATORIAL GREG ~</span>
+          <span class="quote-text color-conspiratorial">"BIRDS ARENT REAL. THEY CHARGE ON POWER LINES."</span>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- ════════════════════════════════════════════ -->
-  <!-- SECTION 4: Supportive -->
-  <!-- ════════════════════════════════════════════ -->
-  <section class="section emotion-section glow-supportive">
-    <div class="reveal">
-      <div class="quote-block color-supportive">
-        <span class="emotion-label color-supportive">~ SUPPORTIVE GREG ~</span><br>
-        "HEY. HEY YOU. YOURE INCREDIBLE. DEAL WITH IT."
+  <!-- ═══ 4: SUPPORTIVE ═══ -->
+  <section class="section glow-supportive">
+    <div class="greg-row">
+      <div class="greg-slide">
+        <canvas class="octopus-canvas" data-emotion="excited" data-color="#a6e3a1" data-scale="3" aria-hidden="true"></canvas>
+      </div>
+      <div class="reveal reveal-delay-1">
+        <div class="chat-bubble bubble-supportive">
+          <span class="emotion-label color-supportive">~ SUPPORTIVE GREG ~</span>
+          <span class="quote-text color-supportive">"HEY. HEY YOU. YOURE INCREDIBLE. DEAL WITH IT."</span>
+        </div>
       </div>
     </div>
-    <div class="reveal reveal-delay-1" style="margin-top: 2rem;">
-      <p class="narrative">
-        But sometimes he can be a genuine <strong style="color: var(--green);">sweetheart</strong>.
-      </p>
+    <div class="reveal reveal-delay-2" style="margin-top:2rem">
+      <p class="narrative">But sometimes he can be a genuine <strong style="color:var(--green)">sweetheart</strong>.</p>
     </div>
-    <div class="reveal reveal-delay-2" style="margin-top: 2rem;">
-      <div class="quote-block color-supportive" style="font-size: clamp(0.9rem, 2vw, 1.2rem);">
-        <span class="emotion-label color-supportive">~ SUPPORTIVE GREG ~</span><br>
-        "YOU HAVE SURVIVED 100% OF YOUR WORST DAYS. THATS A PERFECT RECORD."
+    <div class="greg-row" style="margin-top:2rem">
+      <div class="greg-slide">
+        <canvas class="octopus-canvas" data-emotion="normal" data-color="#a6e3a1" data-scale="2" aria-hidden="true"></canvas>
       </div>
-    </div>
-  </section>
-
-  <!-- ════════════════════════════════════════════ -->
-  <!-- SECTION 5: Angry -->
-  <!-- ════════════════════════════════════════════ -->
-  <section class="section emotion-section glow-angry">
-    <div class="reveal">
-      <div class="quote-block color-angry">
-        <span class="emotion-label color-angry">~ ANGRY GREG ~</span><br>
-        "I HAVE 8 ARMS AND EVERY ONE OF THEM IS CROSSED RIGHT NOW."
-      </div>
-    </div>
-    <div class="reveal reveal-delay-1" style="margin-top: 2rem;">
-      <p class="narrative">
-        Other times his emotions can get the <strong style="color: var(--red);">better of him</strong>.
-      </p>
-    </div>
-    <div class="reveal reveal-delay-2" style="margin-top: 2rem;">
-      <div class="quote-block color-angry" style="font-size: clamp(0.9rem, 2vw, 1.2rem);">
-        <span class="emotion-label color-angry">~ ANGRY GREG ~</span><br>
-        "IM SMALL AND ROUND AND FULL OF RAGE."
+      <div class="reveal reveal-delay-3">
+        <div class="chat-bubble bubble-supportive">
+          <span class="emotion-label color-supportive">~ SUPPORTIVE GREG ~</span>
+          <span class="quote-text color-supportive">"YOU HAVE SURVIVED 100% OF YOUR WORST DAYS. THATS A PERFECT RECORD."</span>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- ════════════════════════════════════════════ -->
-  <!-- SECTION 6: Hungry -->
-  <!-- ════════════════════════════════════════════ -->
-  <section class="section emotion-section glow-hungry">
-    <div class="reveal">
-      <div class="quote-block color-hungry">
-        <span class="emotion-label color-hungry">~ HUNGRY GREG ~</span><br>
-        "EVERY THOUGHT I HAVE RIGHT NOW IS ABOUT SHRIMP."
+  <!-- ═══ 5: ANGRY ═══ -->
+  <section class="section glow-angry">
+    <div class="greg-row">
+      <div class="greg-slide">
+        <canvas class="octopus-canvas" data-emotion="angry" data-color="#f38ba8" data-scale="3" aria-hidden="true"></canvas>
+      </div>
+      <div class="reveal reveal-delay-1">
+        <div class="chat-bubble bubble-angry">
+          <span class="emotion-label color-angry">~ ANGRY GREG ~</span>
+          <span class="quote-text color-angry">"I HAVE 8 ARMS AND EVERY ONE OF THEM IS CROSSED RIGHT NOW."</span>
+        </div>
       </div>
     </div>
-    <div class="reveal reveal-delay-1" style="margin-top: 2rem;">
-      <p class="narrative">
-        And if you don't feed him he might get <strong style="color: var(--pink);">feisty</strong>.
-      </p>
+    <div class="reveal reveal-delay-2" style="margin-top:2rem">
+      <p class="narrative">Other times his emotions can get the <strong style="color:var(--red)">better of him</strong>.</p>
     </div>
-    <div class="reveal reveal-delay-2" style="margin-top: 2rem;">
-      <div class="quote-block color-hungry" style="font-size: clamp(0.9rem, 2vw, 1.2rem);">
-        <span class="emotion-label color-hungry">~ HUNGRY GREG ~</span><br>
-        "IM ONE MISSED MEAL AWAY FROM BECOMING A VILLAIN."
+    <div class="greg-row" style="margin-top:2rem">
+      <div class="greg-slide">
+        <canvas class="octopus-canvas" data-emotion="angry" data-color="#f38ba8" data-scale="2" aria-hidden="true"></canvas>
       </div>
-    </div>
-  </section>
-
-  <!-- ════════════════════════════════════════════ -->
-  <!-- SECTION 7: Creepy -->
-  <!-- ════════════════════════════════════════════ -->
-  <section class="section emotion-section glow-creepy">
-    <div class="reveal">
-      <div class="quote-block color-creepy">
-        <span class="emotion-label color-creepy">~ CREEPY GREG ~</span><br>
-        "I HAVE 8 ARMS AND THEY ALL WANT TO HOLD YOU."
-      </div>
-    </div>
-    <div class="reveal reveal-delay-1" style="margin-top: 2rem;">
-      <p class="narrative">
-        He can get... a bit <em>too</em> <strong style="color: var(--red);">attached</strong>.
-      </p>
-    </div>
-    <div class="reveal reveal-delay-2" style="margin-top: 2rem;">
-      <div class="quote-block color-creepy" style="font-size: clamp(0.9rem, 2vw, 1.2rem);">
-        <span class="emotion-label color-creepy">~ CREEPY GREG ~</span><br>
-        "EVERY ONE OF MY NEURONS IS THINKING ABOUT YOU. THATS A LOT OF NEURONS."
+      <div class="reveal reveal-delay-3">
+        <div class="chat-bubble bubble-angry">
+          <span class="emotion-label color-angry">~ ANGRY GREG ~</span>
+          <span class="quote-text color-angry">"IM SMALL AND ROUND AND FULL OF RAGE."</span>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- ════════════════════════════════════════════ -->
-  <!-- SECTION 8: How Greg Works + Cycling Banner -->
-  <!-- ════════════════════════════════════════════ -->
-  <section class="section final-section">
+  <!-- ═══ 6: HUNGRY ═══ -->
+  <section class="section glow-hungry">
+    <div class="greg-row">
+      <div class="greg-slide">
+        <canvas class="octopus-canvas" data-emotion="hungry" data-color="#f5c2e7" data-scale="3" aria-hidden="true"></canvas>
+      </div>
+      <div class="reveal reveal-delay-1">
+        <div class="chat-bubble bubble-hungry">
+          <span class="emotion-label color-hungry">~ HUNGRY GREG ~</span>
+          <span class="quote-text color-hungry">"EVERY THOUGHT I HAVE RIGHT NOW IS ABOUT SHRIMP."</span>
+        </div>
+      </div>
+    </div>
+    <div class="reveal reveal-delay-2" style="margin-top:2rem">
+      <p class="narrative">And if you don't feed him he might get <strong style="color:var(--pink)">feisty</strong>.</p>
+    </div>
+    <div class="greg-row" style="margin-top:2rem">
+      <div class="greg-slide">
+        <canvas class="octopus-canvas" data-emotion="hungry" data-color="#f5c2e7" data-scale="2" aria-hidden="true"></canvas>
+      </div>
+      <div class="reveal reveal-delay-3">
+        <div class="chat-bubble bubble-hungry">
+          <span class="emotion-label color-hungry">~ HUNGRY GREG ~</span>
+          <span class="quote-text color-hungry">"IM ONE MISSED MEAL AWAY FROM BECOMING A VILLAIN."</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 7: CREEPY ═══ -->
+  <section class="section glow-creepy">
+    <div class="greg-row">
+      <div class="greg-slide">
+        <canvas class="octopus-canvas" data-emotion="creepy" data-color="#f38ba8" data-scale="3" aria-hidden="true"></canvas>
+      </div>
+      <div class="reveal reveal-delay-1">
+        <div class="chat-bubble bubble-creepy">
+          <span class="emotion-label color-creepy">~ CREEPY GREG ~</span>
+          <span class="quote-text color-creepy">"I HAVE 8 ARMS AND THEY ALL WANT TO HOLD YOU."</span>
+        </div>
+      </div>
+    </div>
+    <div class="reveal reveal-delay-2" style="margin-top:2rem">
+      <p class="narrative">He can get... a bit <em>too</em> <strong style="color:var(--red)">attached</strong>.</p>
+    </div>
+    <div class="greg-row" style="margin-top:2rem">
+      <div class="greg-slide">
+        <canvas class="octopus-canvas" data-emotion="creepy" data-color="#f38ba8" data-scale="2" aria-hidden="true"></canvas>
+      </div>
+      <div class="reveal reveal-delay-3">
+        <div class="chat-bubble bubble-creepy">
+          <span class="emotion-label color-creepy">~ CREEPY GREG ~</span>
+          <span class="quote-text color-creepy">"EVERY ONE OF MY NEURONS IS THINKING ABOUT YOU. THATS A LOT OF NEURONS."</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 8: FINALE — How Greg Works + Cycling Banner ═══ -->
+  <section class="section" style="background:radial-gradient(ellipse at 50% 50%,rgba(137,180,250,0.04) 0%,transparent 70%);padding-bottom:6rem">
     <div class="reveal">
-      <h2 class="title-big" style="margin-bottom: 1.5rem;">
+      <h2 class="title-big" style="margin-bottom:1.5rem">
         Depending on how you interact with Greg, you might bring out a different side of him.
       </h2>
     </div>
     <div class="reveal reveal-delay-1">
       <p class="greg-description">
-        Greg is <strong style="color: var(--green);">sensitive</strong>,
-        <strong style="color: var(--pink);">kind</strong>, and
-        <strong style="color: var(--mauve);">sassy</strong>.
+        Greg is <strong style="color:var(--green)">sensitive</strong>,
+        <strong style="color:var(--pink)">kind</strong>, and
+        <strong style="color:var(--mauve)">sassy</strong>.
         He reacts to you and feeds off your emotional state.
         What you do to Greg — and with him in the world — will affect him.
       </p>
     </div>
-    <div class="reveal reveal-delay-2" style="margin-top: 1.5rem;">
-      <p class="greg-description" style="font-weight: 700; color: var(--text);">
-        He's a pal that grows with you.
-      </p>
+    <div class="reveal reveal-delay-2" style="margin-top:1.5rem">
+      <p class="greg-description" style="font-weight:700;color:var(--text)">He's a pal that grows with you.</p>
     </div>
-
-    <div class="reveal reveal-delay-3" style="margin-top: 3rem; width: 100%; display: flex; justify-content: center;">
+    <div class="reveal reveal-delay-3" style="margin-top:3rem;width:100%;display:flex;justify-content:center">
       <div id="greg-banner">
         <div class="greg-banner-inner">
           <canvas class="octopus-canvas greg-banner-canvas" id="greg-left" aria-hidden="true"></canvas>
@@ -573,14 +492,15 @@
     </div>
   </section>
 
-  <!-- ════════════════════════════════════════════ -->
-  <!-- JAVASCRIPT -->
-  <!-- ════════════════════════════════════════════ -->
   <script>
   (function() {
     "use strict";
 
-    // ── Octopus Body Pixel Data (from Dilder) ──
+    // ═══════════════════════════════════════════════
+    // OCTOPUS RENDERER WITH EMOTION FACES
+    // Ported from Dilder firmware render.c
+    // ═══════════════════════════════════════════════
+
     var BODY = [
       [10,[[22,48]]],[11,[[18,52]]],[12,[[16,54]]],[13,[[14,56]]],
       [14,[[13,57]]],[15,[[12,58]]],[16,[[11,59]]],[17,[[10,60]]],
@@ -622,20 +542,79 @@
       [80,[[12,14],[21,23],[33,35],[43,45],[54,56]]]
     ];
 
-    function circlePixels(cx, cy, rSq) {
-      var r = Math.ceil(Math.sqrt(rSq));
-      var pts = [];
+    var W = 70, H = 85, OX = 0, OY = -5;
+
+    // Buffer drawing primitives — all coords are in BODY SPACE.
+    // OX/OY offset is applied here so everything else just uses body coords.
+    function bufSet(buf, x, y, v) {
+      var bx = x + OX, by = y + OY;
+      if (bx >= 0 && bx < W && by >= 0 && by < H) buf[by][bx] = v ? 1 : 0;
+    }
+    function bufCircle(buf, cx, cy, r, filled) {
       for (var dy = -r; dy <= r; dy++)
         for (var dx = -r; dx <= r; dx++)
-          if (dx * dx + dy * dy <= rSq)
-            pts.push([cx + dx, cy + dy]);
-      return pts;
+          if (filled ? (dx*dx + dy*dy <= r*r) : (Math.abs(Math.sqrt(dx*dx + dy*dy) - r) < 0.8))
+            bufSet(buf, cx + dx, cy + dy, 1);
+    }
+    function bufCircleClear(buf, cx, cy, r) {
+      for (var dy = -r; dy <= r; dy++)
+        for (var dx = -r; dx <= r; dx++)
+          if (dx*dx + dy*dy <= r*r)
+            bufSet(buf, cx + dx, cy + dy, 0);
+    }
+    function bufLine(buf, x0, y0, x1, y1) {
+      var dx = Math.abs(x1-x0), dy = Math.abs(y1-y0);
+      var sx = x0<x1?1:-1, sy = y0<y1?1:-1, err = dx-dy;
+      while (true) {
+        bufSet(buf, x0, y0, 1);
+        if (x0===x1 && y0===y1) break;
+        var e2 = 2*err;
+        if (e2 > -dy) { err -= dy; x0 += sx; }
+        if (e2 < dx) { err += dx; y0 += sy; }
+      }
+    }
+    function bufHLine(buf, x, y, len) {
+      for (var i = 0; i < len; i++) bufSet(buf, x + i, y, 1);
     }
 
-    var EYES = circlePixels(22, 25, 16).concat(circlePixels(48, 25, 16));
-    var PUPILS = circlePixels(23, 26, 4).concat(circlePixels(49, 26, 4));
-    var HIGHLIGHTS = circlePixels(20, 23, 1).concat(circlePixels(46, 23, 1));
+    // ── Coordinates in BODY SPACE (before OY offset) ──
+    // Original Dilder banner: eyes at (22,25) and (48,25), smirk at y≈39
+    // These match the body pixel data directly
+    var LX = 22, RX = 48, EY = 25;  // eye centers in body space
+    var MX = 35, MY = 38;           // mouth center in body space
 
+    function drawBody(buf) {
+      // Body data is already in body space — bufSet applies OX/OY
+      BODY.forEach(function(row) {
+        var y = row[0];
+        row[1].forEach(function(span) {
+          for (var x = span[0]; x <= span[1]; x++)
+            bufSet(buf, x, y, 1);
+        });
+      });
+    }
+
+    function clearEyeSockets(buf, emotion) {
+      // Standard clearing for most emotions
+      var r = 5;
+      // Bigger clear for emotions with larger eyes
+      if (emotion === "excited" || emotion === "slaphappy" || emotion === "hungry") r = 6;
+      if (emotion === "unhinged") {
+        bufCircleClear(buf, LX, EY, 7);  // big eye
+        bufCircleClear(buf, RX, EY, 4);  // small eye
+        return;
+      }
+      if (emotion === "creepy") {
+        // Wide clear for heart shapes
+        bufCircleClear(buf, LX, EY, 6);
+        bufCircleClear(buf, RX, EY, 6);
+        return;
+      }
+      bufCircleClear(buf, LX, EY, r);
+      bufCircleClear(buf, RX, EY, r);
+    }
+
+    // Smirk mouth (original Dilder style) — outline (1) + interior (0)
     function smirkPixels() {
       var outline = [], interior = [];
       for (var x = 28; x < 44; x++) {
@@ -651,50 +630,248 @@
       return { outline: outline, interior: interior };
     }
 
-    function drawOctopus(canvas, scale, color) {
+    // Draw a band-style mouth: outline edges (1), interior fill (0)
+    // Same technique as the Dilder smirk — no black voids
+    function drawSmirkMouth(buf) {
+      var sm = smirkPixels();
+      // smirkPixels returns body-space coords, bufSet applies offset
+      sm.interior.forEach(function(p) { bufSet(buf, p[0], p[1], 0); });
+      sm.outline.forEach(function(p) { bufSet(buf, p[0], p[1], 1); });
+    }
+
+    // Generic parametric mouth: takes a curve function f(t) -> y offset
+    // Draws as a band: outline at ±1, interior at center
+    function drawCurveMouth(buf, x0, x1, centerY, curveFn) {
+      for (var x = x0; x <= x1; x++) {
+        var t = (x - x0) / (x1 - x0);
+        var yOff = curveFn(t);
+        var cy = centerY + Math.round(yOff);
+        bufSet(buf, x, cy - 1, 1);  // top outline
+        bufSet(buf, x, cy, 0);      // interior
+        bufSet(buf, x, cy + 1, 1);  // bottom outline
+      }
+    }
+
+    // Circle mouth (O shape): outline ring (1), interior fill (0)
+    function drawCircleMouth(buf, cx, cy, r) {
+      // Clear interior
+      for (var dy = -r+1; dy <= r-1; dy++)
+        for (var dx = -r+1; dx <= r-1; dx++)
+          if (dx*dx + dy*dy < (r-1)*(r-1))
+            bufSet(buf, cx+dx, cy+dy, 0);
+      // Draw outline ring
+      bufCircle(buf, cx, cy, r, false);
+    }
+
+    // ── Emotion-specific eyes (matching Dilder firmware draw_eyes) ──
+    // Original banner: sockets rSq=16(r≈4), pupils at (23,26) rSq=4(r≈2), highlights at (20,23)/(46,23) rSq=1
+    // All coords are in body space. Firmware uses cx±7 spacing with r=3,
+    // but our banner octopus is larger so we scale proportionally.
+    function drawNormalEyes(buf) {
+      // Socket outlines
+      bufCircle(buf, LX, EY, 4, false);
+      bufCircle(buf, RX, EY, 4, false);
+      // Pupils (offset +1,+1 from center like original banner)
+      bufCircle(buf, LX+1, EY+1, 2, true);
+      bufCircle(buf, RX+1, EY+1, 2, true);
+      // Highlights (upper-left sparkle like original banner)
+      bufSet(buf, LX-2, EY-2, 0);
+      bufSet(buf, RX-2, EY-2, 0);
+    }
+
+    function drawEyes(buf, emotion) {
+      switch (emotion) {
+        case "normal":
+        case "chill":
+          drawNormalEyes(buf);
+          break;
+
+        case "angry":
+          // Normal eyes + furrowed brows slanting inward-down
+          drawNormalEyes(buf);
+          bufLine(buf, LX-5, EY-6, LX+3, EY-4);  // left brow: outer-high to inner-low
+          bufLine(buf, RX-3, EY-4, RX+5, EY-6);  // right brow: inner-low to outer-high
+          break;
+
+        case "sad":
+          // Normal sockets + pupils shifted down + upward sad brows
+          bufCircle(buf, LX, EY, 4, false);
+          bufCircle(buf, RX, EY, 4, false);
+          bufCircle(buf, LX, EY+2, 2, true);  // pupils look down
+          bufCircle(buf, RX, EY+2, 2, true);
+          bufLine(buf, LX-5, EY-4, LX+3, EY-6);  // sad brows (opposite slope)
+          bufLine(buf, RX-3, EY-6, RX+5, EY-4);
+          break;
+
+        case "tired":
+          // Half-closed: horizontal lines only (squinting)
+          bufHLine(buf, LX-4, EY, 8);
+          bufHLine(buf, RX-4, EY, 8);
+          bufHLine(buf, LX-3, EY+1, 6);
+          bufHLine(buf, RX-3, EY+1, 6);
+          break;
+
+        case "excited":
+        case "slaphappy":
+          // Big sparkly eyes with highlight dots
+          bufCircle(buf, LX, EY, 5, false);
+          bufCircle(buf, RX, EY, 5, false);
+          bufCircle(buf, LX, EY-1, 2, true);  // filled highlight
+          bufCircle(buf, RX, EY-1, 2, true);
+          bufSet(buf, LX+3, EY-3, 1);  // sparkle pixel
+          bufSet(buf, RX+3, EY-3, 1);
+          break;
+
+        case "hungry":
+          // Big pleading puppy-dog eyes
+          bufCircle(buf, LX, EY, 5, false);  // outer ring
+          bufCircle(buf, RX, EY, 5, false);
+          bufCircle(buf, LX, EY, 3, true);   // big filled pupils
+          bufCircle(buf, RX, EY, 3, true);
+          break;
+
+        case "unhinged":
+          // Asymmetric: one big, one small
+          bufCircle(buf, LX, EY, 6, false);
+          bufCircle(buf, RX, EY, 3, false);
+          bufSet(buf, LX, EY, 1);
+          bufSet(buf, RX, EY, 1);
+          break;
+
+        case "weird":
+          // Spiral/hypno: concentric circles
+          bufCircle(buf, LX, EY, 4, false);
+          bufCircle(buf, RX, EY, 4, false);
+          bufCircle(buf, LX, EY, 2, false);  // inner ring
+          bufCircle(buf, RX, EY, 2, false);
+          break;
+
+        case "chaotic":
+          // X-shaped dead eyes
+          bufLine(buf, LX-4, EY-4, LX+4, EY+4);
+          bufLine(buf, LX-4, EY+4, LX+4, EY-4);
+          bufLine(buf, RX-4, EY-4, RX+4, EY+4);
+          bufLine(buf, RX-4, EY+4, RX+4, EY-4);
+          break;
+
+        case "creepy":
+          // Heart-shaped: two overlapping filled circles per eye
+          bufCircle(buf, LX-2, EY-1, 3, true);
+          bufCircle(buf, LX+2, EY-1, 3, true);
+          bufCircle(buf, RX-2, EY-1, 3, true);
+          bufCircle(buf, RX+2, EY-1, 3, true);
+          break;
+
+        default:
+          drawNormalEyes(buf);
+      }
+    }
+
+    // ── Emotion-specific mouth drawing ──
+    // All mouths use band-style rendering: outline (1) + interior (0)
+    // matching the original Dilder smirk technique — no black voids
+    function drawMouth(buf, emotion) {
+      switch (emotion) {
+        case "normal":
+        case "chill":
+          // Original Dilder smirk — the gold standard
+          drawSmirkMouth(buf);
+          break;
+
+        case "angry":
+          // Frown: V-shape curving down at center
+          drawCurveMouth(buf, MX-6, MX+6, MY+1, function(t) {
+            return 3 * (1 - Math.abs(2*t - 1)) * -1;  // V pointing up (frown)
+          });
+          break;
+
+        case "sad":
+          // Deep frown with flat center
+          drawCurveMouth(buf, MX-6, MX+6, MY+1, function(t) {
+            var v = 2*t - 1;
+            return -3 * (1 - Math.abs(v) * 0.6);
+          });
+          break;
+
+        case "excited":
+        case "slaphappy":
+          // Big open grin — wide U-shape band
+          drawCurveMouth(buf, MX-7, MX+7, MY+1, function(t) {
+            var v = 2*t - 1;
+            return 4 * (1 - v*v);
+          });
+          break;
+
+        case "hungry":
+          // Open O mouth
+          drawCircleMouth(buf, MX, MY+3, 5);
+          break;
+
+        case "tired":
+          // Small yawn O
+          drawCircleMouth(buf, MX, MY+2, 3);
+          break;
+
+        case "unhinged":
+          // Jagged zigzag grin as a band
+          drawCurveMouth(buf, MX-7, MX+7, MY+1, function(t) {
+            // W shape: two bumps
+            var x = t * 4;
+            return 3 * Math.abs(Math.sin(x * Math.PI));
+          });
+          break;
+
+        case "weird":
+          // Sine wave squiggly mouth as a band
+          drawCurveMouth(buf, MX-6, MX+6, MY, function(t) {
+            return Math.sin((t * 12) - 6) * 2;
+          });
+          break;
+
+        case "chaotic":
+          // Big scream O
+          drawCircleMouth(buf, MX, MY+3, 6);
+          break;
+
+        case "creepy":
+          // Wide smile + tongue nub
+          drawCurveMouth(buf, MX-7, MX+7, MY, function(t) {
+            var v = 2*t - 1;
+            return 3 * (1 - v*v);
+          });
+          // Tongue: small filled nub below center
+          bufSet(buf, MX-1, MY+4, 1);
+          bufSet(buf, MX,   MY+4, 1);
+          bufSet(buf, MX+1, MY+4, 1);
+          bufSet(buf, MX,   MY+5, 1);
+          break;
+
+        default:
+          drawSmirkMouth(buf);
+      }
+    }
+
+    // ── Main draw function ──
+    function drawGreg(canvas, scale, emotion, color) {
       var s = scale || 2;
       var pixelColor = color || "#cdd6f4";
-      canvas.width = 70 * s;
-      canvas.height = 85 * s;
+      canvas.width = W * s;
+      canvas.height = H * s;
       var ctx = canvas.getContext("2d");
-      var W = 70, H = 85, offX = 0, offY = -5;
+
+      // Create buffer
       var buf = [];
       for (var i = 0; i < H; i++) buf[i] = new Uint8Array(W);
 
-      BODY.forEach(function(row) {
-        var y = row[0] + offY;
-        if (y < 0 || y >= H) return;
-        row[1].forEach(function(span) {
-          for (var x = Math.max(0, span[0] + offX); x <= Math.min(W - 1, span[1] + offX); x++)
-            buf[y][x] = 1;
-        });
-      });
+      // Draw body
+      drawBody(buf);
+      // Clear eye sockets so eye features show up against the body
+      clearEyeSockets(buf, emotion);
+      // Draw emotion-specific face
+      drawEyes(buf, emotion);
+      drawMouth(buf, emotion);
 
-      EYES.forEach(function(p) {
-        var x = p[0] + offX, y = p[1] + offY;
-        if (x >= 0 && x < W && y >= 0 && y < H) buf[y][x] = 0;
-      });
-
-      PUPILS.forEach(function(p) {
-        var x = p[0] + offX, y = p[1] + offY;
-        if (x >= 0 && x < W && y >= 0 && y < H) buf[y][x] = 1;
-      });
-
-      HIGHLIGHTS.forEach(function(p) {
-        var x = p[0] + offX, y = p[1] + offY;
-        if (x >= 0 && x < W && y >= 0 && y < H) buf[y][x] = 0;
-      });
-
-      var smirk = smirkPixels();
-      smirk.interior.forEach(function(p) {
-        var x = p[0] + offX, y = p[1] + offY;
-        if (x >= 0 && x < W && y >= 0 && y < H) buf[y][x] = 0;
-      });
-      smirk.outline.forEach(function(p) {
-        var x = p[0] + offX, y = p[1] + offY;
-        if (x >= 0 && x < W && y >= 0 && y < H) buf[y][x] = 1;
-      });
-
+      // Render buffer to canvas
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       for (var y = 0; y < H; y++)
         for (var x = 0; x < W; x++)
@@ -704,384 +881,224 @@
           }
     }
 
-    // ── Draw all octopuses ──
+    // ═══════════════════════════════════════════════
+    // INIT ALL CANVASES
+    // ═══════════════════════════════════════════════
+
     function initCanvases() {
-      var scale = window.innerWidth < 600 ? 2 : 3;
-      var bannerScale = window.innerWidth < 600 ? 1 : 2;
+      // All emotion canvases via data attributes
+      document.querySelectorAll("canvas[data-emotion]").forEach(function(c) {
+        var emotion = c.getAttribute("data-emotion");
+        var color = c.getAttribute("data-color") || "#cdd6f4";
+        var scale = parseInt(c.getAttribute("data-scale")) || 2;
+        if (window.innerWidth < 600) scale = Math.max(1, scale - 1);
+        drawGreg(c, scale, emotion, color);
+      });
 
-      // Hero octopus
-      var heroCanvas = document.getElementById("greg-hero");
-      if (heroCanvas) drawOctopus(heroCanvas, scale, "#cba6f7");
-
-      // Banner octopuses
-      var leftCanvas = document.getElementById("greg-left");
-      var rightCanvas = document.getElementById("greg-right");
-      if (leftCanvas) drawOctopus(leftCanvas, bannerScale);
-      if (rightCanvas) {
-        drawOctopus(rightCanvas, bannerScale);
-        rightCanvas.style.transform = "scaleX(-1)";
-      }
+      // Banner octopuses (normal face)
+      var bs = window.innerWidth < 600 ? 1 : 2;
+      var left = document.getElementById("greg-left");
+      var right = document.getElementById("greg-right");
+      if (left) drawGreg(left, bs, "normal");
+      if (right) { drawGreg(right, bs, "normal"); right.style.transform = "scaleX(-1)"; }
     }
 
-    // ── Quote Pools ──
+    // ═══════════════════════════════════════════════
+    // QUOTE POOLS (from Dilder)
+    // ═══════════════════════════════════════════════
+
     var SASSY = [
       "WIFI IS JUST SPICY AIR.","FISH ARE JUST WET BIRDS.","I DONT HAVE BONES AND THATS A FLEX.",
-      "THE OCEAN IS JUST SKY JUICE.","DOORS ARE WALLS THAT GAVE UP.","IM 90% WATER. IM BASICALLY A SPLASH.",
-      "SAND IS JUST ANGRY ROCKS.","LAVA IS JUST EARTH SAUCE.","SOCKS ARE JUST FOOT PRISONS.",
-      "8 ARMS AND ZERO PATIENCE.","SPAGHETTI IS JUST BONELESS TENTACLES.","I HUG THINGS 4X BETTER THAN YOU.",
-      "CLAPPING IS JUST HITTING YOURSELF BECAUSE YOU LIKE SOMETHING.",
-      "TEETH ARE THE ONLY BONES YOU HAVE TO BRUSH.","HAIR IS JUST HEAD STRINGS.",
-      "EYEBROWS ARE JUST FOREHEAD MUSTACHES.","NOSES ARE JUST FACE HANDLES.",
-      "IM TOO PRETTY FOR THIS DAMN OCEAN.","I DIDNT ASK TO BE THIS FABULOUS.",
-      "YOUR OPINION MEANS LESS THAN PLANKTON TO ME.","SORRY CANT HEAR YOU OVER MY 8 ARM ENERGY.",
-      "I HAVE 3 HEARTS AND NONE OF THEM CARE.","BOLD WORDS FROM SOMEONE WITH ONLY 2 ARMS.",
+      "THE OCEAN IS JUST SKY JUICE.","DOORS ARE WALLS THAT GAVE UP.",
+      "8 ARMS AND ZERO PATIENCE.","SPAGHETTI IS JUST BONELESS TENTACLES.",
       "THE AUDACITY. THE DAMN AUDACITY.","TALK TO THE TENTACLE CAUSE THE FACE AINT LISTENING.",
-      "I HAVE MORE ARMS THAN YOU HAVE BRAIN CELLS.","IM NOT BEING RUDE IM BEING EFFICIENT WITH MY DISGUST.",
-      "I DIDNT CHOOSE THE TENTACLE LIFE. IT CHOSE ME AND I SLAYED.",
-      "YOUR SKELETON IS WET RIGHT NOW. THINK ABOUT IT.","BELLY BUTTONS ARE JUST OLD MOUTHS.",
-      "SHADOWS ARE JUST 2D VERSIONS OF YOU SPYING.","HICCUPS ARE YOUR BODY GLITCHING.",
-      "BABIES ARE JUST SMALL DRUNK PEOPLE WHO DONT PAY RENT.",
-      "FRIDGES ARE JUST COLD CLOSETS FOR DEAD THINGS.",
-      "NOTHING MATTERS AND THATS ACTUALLY PRETTY DAMN FREEING.",
-      "WE ARE ALL JUST MEAT COMPUTERS HAVING A BAD TIME.","TIME IS FAKE. CLOCKS ARE A CONSPIRACY.",
-      "THE VOID STARED BACK AND IT WINKED AT ME.",
+      "I HAVE 3 HEARTS AND NONE OF THEM CARE.","BOLD WORDS FROM SOMEONE WITH ONLY 2 ARMS.",
+      "I HAVE ZERO BONES. ZERO. AND I STILL HAVE MORE SPINE THAN YOU.",
+      "EACH OF MY ARMS HAS ITS OWN BRAIN. THATS 9 BRAINS TOTAL YOU ABSOLUTE WALNUT.",
+      "YOUR SKELETON IS WET RIGHT NOW. THINK ABOUT IT.",
+      "COFFEE IS JUST BEAN BROTH FOR PEOPLE WHO HATE THEMSELVES.",
+      "PICKLES ARE JUST CUCUMBERS THAT WENT THROUGH SOME SHIT.",
       "FREE WILL IS JUST ANXIETY WITH A MARKETING TEAM.",
-      "YOURE A BRAIN PILOTING A MEAT MECH AND YOURE DOING GREAT I GUESS.",
-      "I HAVE 3 HEARTS AND ALL OF THEM ARE PETTY.",
       "MY BLOOD IS LITERALLY BLUE. IM ROYALTY. BOW.",
       "I CAN CHANGE COLOR. CAN YOU DO THAT. NO. SIT DOWN.",
-      "I ONCE UNSCREWED A JAR FROM THE INSIDE. WHAT HAVE YOU DONE.",
-      "MY BRAIN IS SHAPED LIKE A DONUT AND ITS STILL SMARTER THAN YOU.",
-      "I HAVE ZERO BONES. ZERO. AND I STILL HAVE MORE SPINE THAN YOU.",
-      "I SQUIRT INK WHEN IM SCARED AND I THINK THATS BEAUTIFUL.",
-      "EACH OF MY ARMS HAS ITS OWN BRAIN. THATS 9 BRAINS TOTAL YOU ABSOLUTE WALNUT.",
-      "LASAGNA IS JUST SPAGHETTI CAKE.","CEREAL IS BREAKFAST SOUP AND YOU KNOW IT.",
-      "PICKLES ARE JUST CUCUMBERS THAT WENT THROUGH SOME SHIT.",
-      "POPCORN IS JUST CORN HAVING A PANIC ATTACK.",
-      "CHEESE IS JUST A LOAF OF MILK.","COFFEE IS JUST BEAN BROTH FOR PEOPLE WHO HATE THEMSELVES."
+      "I ONCE UNSCREWED A JAR FROM THE INSIDE. WHAT HAVE YOU DONE."
     ];
-
     var SUPPORTIVE = [
       "YOU ARE DOING SO DAMN GOOD RIGHT NOW.","HEY. HEY YOU. YOURE INCREDIBLE. DEAL WITH IT.",
-      "I HAVE 8 ARMS AND ID USE THEM ALL TO HUG YOU.","YOURE THE REASON I BELIEVE IN LAND PEOPLE.",
-      "GO DRINK SOME WATER YOU BEAUTIFUL DISASTER.","YOU ABSOLUTE LEGEND. I MEAN IT. LEGEND.",
-      "IM SO PROUD OF YOU IT MAKES MY TENTACLES TINGLE.",
+      "I HAVE 8 ARMS AND ID USE THEM ALL TO HUG YOU.",
+      "GO DRINK SOME WATER YOU BEAUTIFUL DISASTER.",
       "YOURE DOING GREAT SWEETIE AND I WILL FIGHT ANYONE WHO SAYS OTHERWISE.",
-      "YOU DESERVE A STANDING OVATION JUST FOR GETTING OUT OF BED.",
       "THE WORLD IS BETTER BECAUSE YOURE IN IT AND THATS NOT EVEN DEBATABLE.",
-      "IF LIFE GIVES YOU LEMONS I WILL STRANGLE LIFE FOR YOU.",
       "YOURE NOT A MESS YOURE A MASTERPIECE WITH EXTRA TEXTURE.",
-      "I WOULD COMMIT CRIMES FOR YOUR HAPPINESS. SMALL ONES.",
-      "LISTEN. YOURE A SNACK. AN ENTIRE BUFFET ACTUALLY.",
-      "IF ANYONE MAKES YOU SAD I WILL RELEASE THE INK CLOUD OF VENGEANCE.",
-      "I WOULD CRAWL ACROSS AN ENTIRE DESERT FOR YOU AND I NEED WATER TO LIVE.",
       "YOU HAVE SURVIVED 100% OF YOUR WORST DAYS. THATS A PERFECT RECORD.",
       "YOURE PLAYING ON HARD MODE AND STILL WINNING. RESPECT.",
-      "PRESSURE MAKES DIAMONDS AND YOURE ABOUT TO BE THE SHINIEST BITCH IN THE ROOM.",
-      "YOURE NOT AWKWARD YOURE LIMITED EDITION.",
-      "DID YOU EAT TODAY YOU MAGNIFICENT CREATURE.","DRINK WATER OR I SWEAR ON MY TENTACLES.",
-      "REST IS NOT LAZY ITS TACTICAL. NOW SIT DOWN.",
-      "YOUR FEELINGS ARE VALID EVEN THE WEIRD ONES.",
-      "BE NICE TO YOURSELF OR ILL SQUIRT INK AT YOU.",
-      "YOUR BACK HURTS BECAUSE YOURE CARRYING EVERYONE ELSE. PUT THAT DOWN.",
-      "STOP DOOM SCROLLING AND GO LOOK AT A TREE. TREES ARE NICE.",
+      "DID YOU EAT TODAY YOU MAGNIFICENT CREATURE.",
       "YOUR JAW IS CLENCHED RIGHT NOW ISNT IT. RELAX THAT. THERE YOU GO.",
-      "THAT THING YOURE WORRIED ABOUT. ITS GONNA BE OK. I PROMISE.",
       "YOURE MY FAVORITE HUMAN AND I LIVE IN THE OCEAN.",
-      "I WROTE YOUR NAME IN INK. ON THE OCEAN FLOOR. FOREVER.",
-      "YOU ARE THE TREASURE THAT PIRATES WERE LOOKING FOR.",
-      "IN A SEA OF FISH YOU ARE THE WHOLE DAMN OCEAN.",
-      "I LOVE YOU LIKE THE OCEAN LOVES BEING WET.",
-      "GO BE GREAT TODAY OR DONT. ILL LOVE YOU EITHER WAY.",
-      "YOURE THE ONLY HUMAN I WOULDNT INK ON SIGHT."
+      "I LOVE YOU LIKE THE OCEAN LOVES BEING WET."
     ];
-
     var ANGRY = [
-      "IM NOT MAD IM JUST DISAPPOINTED. AND MAD.",
-      "WHO ATE MY SHRIMP. WHO. WAS IT YOU.",
+      "IM NOT MAD IM JUST DISAPPOINTED. AND MAD.","WHO ATE MY SHRIMP. WHO. WAS IT YOU.",
       "I HAVE 8 ARMS AND EVERY ONE OF THEM IS CROSSED RIGHT NOW.",
       "I WILL FLIP THIS TIDE POOL. DONT TEST ME.",
-      "STOP LOOKING AT ME. STOP IT. I SAID STOP.",
-      "THE AUDACITY OF THIS ENTIRE OCEAN.",
-      "DO NOT BOOP MY HEAD. I WILL INK.",
+      "THE AUDACITY OF THIS ENTIRE OCEAN.","DO NOT BOOP MY HEAD. I WILL INK.",
       "I WOKE UP AND CHOSE VIOLENCE. TENTACLE VIOLENCE.",
-      "WHOEVER INVENTED MONDAYS DESERVES TO STEP ON A SEA URCHIN.",
       "I HAVE THREE HEARTS AND THEY ALL HATE YOU RIGHT NOW.",
       "SOMEBODY MOVED MY ROCK. MY ROCK. MINE.",
-      "THE FACT THAT I CANT SLAM A DOOR MAKES ME ANGRIER.",
-      "I WILL FIGHT EVERY CRAB IN THIS OCEAN. EVERY. ONE.",
       "IM SMALL AND ROUND AND FULL OF RAGE."
     ];
-
     var CONSPIRATORIAL = [
       "BIRDS ARENT REAL. THEY CHARGE ON POWER LINES.",
-      "CLOUDS ARE GOVERNMENT PILLOWS.","THE MOON IS JUST THE BACK OF THE SUN.",
-      "GRAVITY IS A SUBSCRIPTION SERVICE.","TREES ARE SURVEILLANCE ANTENNAS. LOOK IT UP.",
-      "DEJA VU IS THE SIMULATION BUFFERING.",
-      "FINGERPRINTS ARE JUST SKIN BARCODES THE GOVERNMENT PRE-INSTALLED.",
-      "THE DEEP STATE RUNS APPLEBEES.","FINLAND DOESNT EXIST. GOOGLE IT.",
-      "DENVER AIRPORT IS AN ILLUMINATI CLUBHOUSE.",
+      "CLOUDS ARE GOVERNMENT PILLOWS.","GRAVITY IS A SUBSCRIPTION SERVICE.",
+      "DEJA VU IS THE SIMULATION BUFFERING.","FINLAND DOESNT EXIST. GOOGLE IT.",
       "THE ILLUMINATI RUNS COSTCO. FREE SAMPLES ARE MIND CONTROL.",
       "GIRAFFES ARE GOVERNMENT SURVEILLANCE CAMERAS WITH LEGS.",
-      "DREAMS ARE LEAKED FOOTAGE FROM ALTERNATE DIMENSIONS.",
-      "YOUR CAT REPORTS TO SOMEONE. I DONT KNOW WHO BUT SOMEONE."
+      "DREAMS ARE LEAKED FOOTAGE FROM ALTERNATE DIMENSIONS."
     ];
-
     var SAD = [
       "THE OCEAN IS SO BIG AND I AM SO SMALL.",
-      "NOBODY EVER ASKS HOW THE OCTOPUS IS DOING.",
-      "I HAVE 3 HEARTS AND THEY ALL HURT.",
-      "MY TENTACLES ARE TIRED. MY SOUL IS TIRED.",
+      "NOBODY EVER ASKS HOW THE OCTOPUS IS DOING.","I HAVE 3 HEARTS AND THEY ALL HURT.",
       "I TRIED TO HUG MYSELF BUT MY ARMS GOT TANGLED.",
-      "JELLYFISH DONT HAVE BRAINS. SOMETIMES I ENVY THEM.",
       "FISH HAVE FRIENDS. I HAVE EIGHT ARMS AND ZERO FRIENDS.",
-      "I COULD DISAPPEAR INTO A TINY CRACK AND NOBODY WOULD LOOK.",
-      "RAIN IS JUST THE SKY CRYING AND HONESTLY SAME.",
       "I MISS THINGS I NEVER HAD."
     ];
-
     var CHAOTIC = [
-      "I JUST SNEEZED AND I THINK I SAW GOD.",
-      "DOORS ARE JUST POLITE WALLS.","WHAT IF YOUR KNEES BENT THE OTHER WAY.",
-      "MY LEFT TENTACLE DOESNT TRUST MY RIGHT TENTACLE.",
-      "I FORGOT WHAT I WAS SAYING BUT IM STILL YELLING.",
-      "WHAT SOUND DOES A SHADOW MAKE.",
-      "I AM GOING TO EAT THE SUN.",
-      "I HAD A THOUGHT BUT IT ESCAPED. ITS LOOSE NOW.",
-      "SOMEWHERE A POTATO IS BEING BORN AND NOBODY IS CELEBRATING.",
-      "I COUNTED MY ARMS AND GOT A DIFFERENT NUMBER EACH TIME.",
-      "IF NOTHING STICKS TO TEFLON HOW DO THEY STICK TEFLON TO THE PAN."
+      "I JUST SNEEZED AND I THINK I SAW GOD.","WHAT IF YOUR KNEES BENT THE OTHER WAY.",
+      "I FORGOT WHAT I WAS SAYING BUT IM STILL YELLING.","WHAT SOUND DOES A SHADOW MAKE.",
+      "I AM GOING TO EAT THE SUN.","I HAD A THOUGHT BUT IT ESCAPED. ITS LOOSE NOW.",
+      "I COUNTED MY ARMS AND GOT A DIFFERENT NUMBER EACH TIME."
     ];
-
     var HUNGRY = [
-      "I COULD EAT AN ENTIRE CORAL REEF RIGHT NOW.",
-      "IS THAT FOOD. PLEASE BE FOOD.",
       "EVERY THOUGHT I HAVE RIGHT NOW IS ABOUT SHRIMP.",
-      "IF I DONT EAT IN THE NEXT 5 MINUTES SOMEONE WILL PAY.",
-      "I HAVE 8 ARMS AND ALL OF THEM WANT SNACKS.",
+      "IS THAT FOOD. PLEASE BE FOOD.","I HAVE 8 ARMS AND ALL OF THEM WANT SNACKS.",
       "I WOULD SELL 3 OF MY HEARTS FOR A GOOD TACO.",
-      "SNACKS ARE JUST MEALS THAT BELIEVE IN THEMSELVES.",
-      "THE OCEAN IS JUST A BUFFET WITH A DRESS CODE.",
       "IM ONE MISSED MEAL AWAY FROM BECOMING A VILLAIN.",
-      "I CANT THINK ON AN EMPTY STOMACH AND MY STOMACH IS ALWAYS EMPTY."
+      "THE OCEAN IS JUST A BUFFET WITH A DRESS CODE."
     ];
-
     var TIRED = [
       "I HAVE 3 HEARTS AND THEYRE ALL EXHAUSTED.",
       "MY TENTACLES ARE SO TIRED THEYRE BASICALLY NOODLES.",
-      "IM RUNNING ON 1 BRAIN CELL AND ITS ON BREAK.",
-      "YAWNING IS MY CARDIO.",
-      "IF NAPPING WAS AN OLYMPIC SPORT ID GET GOLD.",
-      "THE CONCEPT OF MORNING IS VIOLENCE.",
+      "YAWNING IS MY CARDIO.","THE CONCEPT OF MORNING IS VIOLENCE.",
       "I THINK I FELL ASLEEP MIDSENTENCE ONCE AND NOBODY NOTI",
-      "IM SO TIRED MY CAMOUFLAGE STOPPED WORKING.",
       "DO OCTOPUSES DREAM OF ELECTRIC SHRIMP."
     ];
-
     var CREEPY = [
       "I HAVE 8 ARMS AND THEY ALL WANT TO HOLD YOU.",
       "MY LOVE IS DEEPER THAN THE MARIANA TRENCH.",
-      "TENTACLES WERE MADE FOR CUDDLING AND I HAVE EIGHT OF THEM.",
       "MY 3 HEARTS ALL BEAT FOR YOU AND THATS A LOT OF CARDIO.",
-      "BABY IM LIKE AN OCTOPUS. FLEXIBLE AND VERY ATTACHED.",
       "LETS GET TANGLED UP. I HAVE THE ARMS FOR IT.",
-      "MY SUCTION CUPS ARE TINGLING AND THATS EITHER LOVE OR ALLERGIES.",
-      "THE TIDES ARENT THE ONLY THING RISING WHEN YOURE AROUND.",
       "IM NOT CLINGY IM JUST AN OCTOPUS AND THIS IS WHAT WE DO.",
       "EVERY ONE OF MY NEURONS IS THINKING ABOUT YOU. THATS A LOT OF NEURONS."
     ];
-
     var EXCITED = [
-      "OH MY GOD OH MY GOD OH MY GOD.",
-      "EVERYTHING IS HAPPENING AND I LOVE IT.",
+      "OH MY GOD OH MY GOD OH MY GOD.","EVERYTHING IS HAPPENING AND I LOVE IT.",
       "MY TENTACLES ARE VIBRATING WITH PURE JOY.",
       "IM SO EXCITED I MIGHT INK AND I DONT EVEN CARE.",
-      "I HAVE SO MUCH ENERGY RIGHT NOW I COULD FIGHT THE MOON.",
-      "I CANT STOP SMILING AND I DONT HAVE LIPS.",
-      "AHHHHHHHHHHHH IN A GOOD WAY.",
-      "IS THIS WHAT COFFEE FEELS LIKE BECAUSE I LOVE IT.",
-      "THE VIBES ARE IMMACULATE AND I AM ASCENDING."
+      "AHHHHHHHHHHHH IN A GOOD WAY.","THE VIBES ARE IMMACULATE AND I AM ASCENDING."
     ];
-
     var CHILL = [
       "BRO THE CURRENT WILL TAKE US WHERE WE NEED TO GO.",
       "STRESS IS A LAND CREATURE PROBLEM.",
-      "I AM ONE WITH THE WATER AND THE WATER IS VIBING.",
       "EVERYTHING IS TEMPORARY SO WHY WORRY. JUST FLOAT.",
-      "NO THOUGHTS JUST CURRENTS.",
-      "IM SO RELAXED MY BONELESS BODY IS EVEN MORE BONELESS.",
-      "NAMASTE IN THE WATER FOREVER.",
-      "MY ENERGY CANNOT BE DISRUPTED. I AM THE OCEAN."
+      "NO THOUGHTS JUST CURRENTS.","NAMASTE IN THE WATER FOREVER."
     ];
-
     var HOMESICK = [
       "I MISS MY ROCK. MY SPECIFIC ROCK.",
       "HOME IS WHERE THE HEART IS AND MY 3 HEARTS ARE ALL SOMEWHERE ELSE.",
-      "THE WATER HERE TASTES DIFFERENT. NOT BAD JUST NOT HOME.",
-      "I DREW A MAP OF HOME IN THE SAND BUT THE TIDE TOOK IT.",
-      "I CARRY HOME IN MY MEMORY BECAUSE I CANT CARRY IT IN MY ARMS.",
-      "ONE DAY ILL GO BACK. ONE DAY."
+      "I CARRY HOME IN MY MEMORY BECAUSE I CANT CARRY IT IN MY ARMS."
     ];
-
     var NOSTALGIC = [
       "REMEMBER WHEN THE OCEAN WAS QUIETER.",
       "THEY DONT MAKE TIDES LIKE THEY USED TO.",
-      "BACK IN MY DAY WE DIDNT HAVE PLASTIC. GOOD TIMES.",
-      "THE OLD KELP FOREST WAS TALLER. OR MAYBE I WAS SHORTER.",
-      "MY GRANDMOTHER COULD CHANGE 47 COLORS. THEY DONT MAKE EM LIKE HER.",
-      "I HAD A BEST FRIEND WHO WAS A CRAB. WONDER WHERE HE IS NOW."
+      "MY GRANDMOTHER COULD CHANGE 47 COLORS. THEY DONT MAKE EM LIKE HER."
     ];
-
     var SLAPHAPPY = [
       "HAHAHA I DONT EVEN KNOW WHY IM LAUGHING.",
-      "EVERYTHING IS FUNNY WHEN YOURE THIS UNHINGED.",
-      "SOMEONE SAID MOIST AND I LOST IT.",
-      "IM SO HAPPY I MIGHT INK.",
-      "I JUST MADE EYE CONTACT WITH A SHRIMP AND WE BOTH LAUGHED.",
-      "MY BRAIN IS DOING THAT THING WHERE IT PLAYS CIRCUS MUSIC.",
+      "SOMEONE SAID MOIST AND I LOST IT.","IM SO HAPPY I MIGHT INK.",
       "WHY IS THE WORD SPOON SO FUNNY. SPOOOON."
     ];
-
     var LAZY = [
       "I WOULD DO SOMETHING BUT THAT REQUIRES DOING SOMETHING.",
-      "MY BED AND I ARE IN A COMMITTED RELATIONSHIP.",
       "AMBITION IS A LAND CREATURE PROBLEM.",
-      "I HAVE 8 ARMS AND NONE OF THEM WANT TO DO ANYTHING.",
-      "THE UNIVERSE IS EXPANDING SO TECHNICALLY IM MOVING.",
-      "DOING NOTHING IS STILL DOING SOMETHING. CHECKMATE.",
-      "MY TO-DO LIST HAS ONE ITEM AND ITS IGNORE THE TO-DO LIST."
+      "DOING NOTHING IS STILL DOING SOMETHING. CHECKMATE."
     ];
-
     var FAT = [
-      "I ATE THE WHOLE THING AND ID DO IT AGAIN.",
       "ROUND IS A SHAPE AND IM NAILING IT.",
-      "I DIDNT GET THIS THICC BY ACCIDENT. THIS TOOK DEDICATION.",
-      "I HAVE 8 ARMS SO I CAN HOLD 8 SNACKS. EVOLUTION IS BEAUTIFUL.",
       "CALORIES DONT COUNT IN INTERNATIONAL WATERS.",
-      "I JIGGLE WHEN I MOVE AND ITS CALLED CHARISMA.",
       "I CONTAIN MULTITUDES AND ALSO SEVERAL BURRITOS."
     ];
 
-    // ── Shuffle ──
-    function shuffle(arr) {
-      for (var i = arr.length - 1; i > 0; i--) {
-        var j = Math.floor(Math.random() * (i + 1));
-        var tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
-      }
-      return arr;
+    function shuffle(a) {
+      for (var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}
+      return a;
     }
-
     function buildPool() {
-      var pool = [];
-      var sources = [
+      var pool=[], src=[
         [SASSY,"sassy"],[SUPPORTIVE,"supportive"],[ANGRY,"angry"],
         [CONSPIRATORIAL,"conspiratorial"],[SAD,"sad"],[CHAOTIC,"chaotic"],
         [HUNGRY,"hungry"],[TIRED,"tired"],[SLAPHAPPY,"slaphappy"],
         [LAZY,"lazy"],[FAT,"fat"],[CHILL,"chill"],[CREEPY,"creepy"],
         [EXCITED,"excited"],[NOSTALGIC,"nostalgic"],[HOMESICK,"homesick"]
       ];
-      sources.forEach(function(pair) {
-        shuffle(pair[0].slice()).forEach(function(q) {
-          pool.push({ text: q, mode: pair[1] });
-        });
-      });
+      src.forEach(function(p){shuffle(p[0].slice()).forEach(function(q){pool.push({text:q,mode:p[1]});});});
       return shuffle(pool);
     }
 
-    // ── Cycling Banner Animation ──
+    // ═══════════════════════════════════════════════
+    // CYCLING BANNER
+    // ═══════════════════════════════════════════════
+
     function initBanner() {
-      var modeEl = document.getElementById("greg-mode");
-      var quoteEl = document.getElementById("greg-quote");
-      if (!modeEl || !quoteEl) return;
-
-      var pool = buildPool();
-      var idx = 0;
-      var charIdx = 0;
-      var current = pool[0];
-      var typing = true;
-      var pauseFrames = 0;
-
-      var labels = {
-        sassy: "~ SASSY GREG ~", supportive: "~ SUPPORTIVE GREG ~",
-        angry: "~ ANGRY GREG ~", conspiratorial: "~ CONSPIRATORIAL GREG ~",
-        sad: "~ SAD GREG ~", chaotic: "~ CHAOTIC GREG ~",
-        hungry: "~ HUNGRY GREG ~", tired: "~ TIRED GREG ~",
-        slaphappy: "~ SLAP HAPPY GREG ~", lazy: "~ LAZY GREG ~",
-        fat: "~ FAT GREG ~", chill: "~ CHILL GREG ~",
-        creepy: "~ CREEPY GREG ~", excited: "~ EXCITED GREG ~",
-        nostalgic: "~ NOSTALGIC GREG ~", homesick: "~ HOMESICK GREG ~"
+      var modeEl=document.getElementById("greg-mode"), quoteEl=document.getElementById("greg-quote");
+      if (!modeEl||!quoteEl) return;
+      var pool=buildPool(), idx=0, charIdx=0, current=pool[0], typing=true, pauseFrames=0;
+      var labels={
+        sassy:"~ SASSY GREG ~",supportive:"~ SUPPORTIVE GREG ~",angry:"~ ANGRY GREG ~",
+        conspiratorial:"~ CONSPIRATORIAL GREG ~",sad:"~ SAD GREG ~",chaotic:"~ CHAOTIC GREG ~",
+        hungry:"~ HUNGRY GREG ~",tired:"~ TIRED GREG ~",slaphappy:"~ SLAP HAPPY GREG ~",
+        lazy:"~ LAZY GREG ~",fat:"~ FAT GREG ~",chill:"~ CHILL GREG ~",
+        creepy:"~ CREEPY GREG ~",excited:"~ EXCITED GREG ~",
+        nostalgic:"~ NOSTALGIC GREG ~",homesick:"~ HOMESICK GREG ~"
       };
-
-      function updateMode(mode) {
-        modeEl.textContent = labels[mode] || labels.sassy;
-        modeEl.className = "greg-banner-mode mode-" + mode;
+      function updateMode(m){modeEl.textContent=labels[m]||labels.sassy;modeEl.className="greg-banner-mode mode-"+m;}
+      function tick(){
+        if(pauseFrames>0){pauseFrames--;return;}
+        if(typing){charIdx++;quoteEl.textContent=current.text.substring(0,charIdx);
+          if(charIdx>=current.text.length){typing=false;pauseFrames=60;}
+        }else{idx=(idx+1)%pool.length;if(idx===0)pool=buildPool();
+          current=pool[idx];charIdx=0;typing=true;updateMode(current.mode);quoteEl.textContent="";}
       }
-
-      function tick() {
-        if (pauseFrames > 0) { pauseFrames--; return; }
-        if (typing) {
-          charIdx++;
-          quoteEl.textContent = current.text.substring(0, charIdx);
-          if (charIdx >= current.text.length) {
-            typing = false;
-            pauseFrames = 60;
-          }
-        } else {
-          idx = (idx + 1) % pool.length;
-          if (idx === 0) pool = buildPool();
-          current = pool[idx];
-          charIdx = 0;
-          typing = true;
-          updateMode(current.mode);
-          quoteEl.textContent = "";
-        }
-      }
-
       updateMode(current.mode);
       setInterval(tick, 50);
     }
 
-    // ── Scroll Reveal ──
-    function initReveal() {
-      var els = document.querySelectorAll(".reveal");
-      var observer = new IntersectionObserver(function(entries) {
-        entries.forEach(function(entry) {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("visible");
-          }
-        });
-      }, { threshold: 0.15, rootMargin: "0px 0px -50px 0px" });
+    // ═══════════════════════════════════════════════
+    // SCROLL REVEAL + SLIDE-IN
+    // ═══════════════════════════════════════════════
 
-      els.forEach(function(el) { observer.observe(el); });
+    function initReveal() {
+      var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(e) { if (e.isIntersecting) e.target.classList.add("visible"); });
+      }, { threshold: 0.15, rootMargin: "0px 0px -40px 0px" });
+      document.querySelectorAll(".reveal, .greg-slide").forEach(function(el) { observer.observe(el); });
     }
 
-    // ── Scroll Indicator ──
     function initScrollIndicator() {
-      var indicator = document.getElementById("scroll-indicator");
-      if (!indicator) return;
+      var ind = document.getElementById("scroll-indicator");
+      if (!ind) return;
       window.addEventListener("scroll", function() {
-        var scrolled = window.scrollY / (document.body.scrollHeight - window.innerHeight);
-        if (scrolled > 0.85) {
-          indicator.classList.add("hidden");
-        } else {
-          indicator.classList.remove("hidden");
-        }
+        var pct = window.scrollY / (document.body.scrollHeight - window.innerHeight);
+        ind.classList.toggle("hidden", pct > 0.85);
       });
     }
 
-    // ── Init ──
-    function init() {
-      initCanvases();
-      initReveal();
-      initBanner();
-      initScrollIndicator();
-    }
+    // ═══════════════════════════════════════════════
+    // BOOT
+    // ═══════════════════════════════════════════════
 
-    if (document.readyState === "loading") {
-      document.addEventListener("DOMContentLoaded", init);
-    } else {
-      init();
-    }
+    function init() { initCanvases(); initReveal(); initBanner(); initScrollIndicator(); }
+    if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
+    else init();
   })();
   </script>
 </body>
