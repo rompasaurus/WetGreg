@@ -68,6 +68,47 @@
       transform: translateX(0) rotate(0deg);
     }
 
+    /* ── Greg Dramatic Entrance (section 2) ── */
+    .greg-entrance {
+      opacity: 0;
+      transform: translateY(200px) scale(0.3) rotate(-20deg);
+    }
+    .greg-entrance.visible {
+      animation: greg-burst-in 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+    @keyframes greg-burst-in {
+      0%   { opacity: 0; transform: translateY(200px) scale(0.3) rotate(-20deg); }
+      40%  { opacity: 1; transform: translateY(-30px) scale(1.15) rotate(8deg); }
+      60%  { transform: translateY(15px) scale(0.95) rotate(-3deg); }
+      80%  { transform: translateY(-5px) scale(1.02) rotate(1deg); }
+      100% { opacity: 1; transform: translateY(0) scale(1) rotate(0deg); }
+    }
+
+    .greg-speak {
+      opacity: 0;
+      transform: scale(0.3);
+    }
+    .greg-speak.visible {
+      animation: bubble-pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.6s forwards;
+    }
+    @keyframes bubble-pop {
+      0%   { opacity: 0; transform: scale(0.3); }
+      60%  { opacity: 1; transform: scale(1.08); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    .greg-awoke {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    .greg-awoke.visible {
+      animation: awoke-fade 0.6s ease 1.2s forwards;
+    }
+    @keyframes awoke-fade {
+      0%   { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
     /* ── Typography ── */
     .title-huge {
       font-size: clamp(3rem, 10vw, 8rem);
@@ -370,18 +411,16 @@
 
   <!-- ═══ 2: GREG APPEARS — Sassy ═══ -->
   <section class="section glow-sassy">
-    <div class="greg-row">
-      <div class="greg-slide">
-        <canvas class="octopus-canvas" data-emotion="normal" data-color="#cba6f7" data-scale="3" aria-hidden="true"></canvas>
-      </div>
-      <div class="reveal reveal-delay-2">
-        <div class="chat-bubble bubble-sassy">
-          <span class="emotion-label color-sassy">~ SASSY GREG ~</span>
-          <span class="quote-text color-sassy">"PICKLES ARE JUST CUCUMBERS THAT WENT TO JAIL AND CAME OUT DIFFERENT."</span>
-        </div>
+    <div class="greg-entrance">
+      <canvas class="octopus-canvas" data-emotion="normal" data-color="#cba6f7" data-scale="3" aria-hidden="true"></canvas>
+    </div>
+    <div class="greg-speak" style="margin-top:1.5rem">
+      <div class="chat-bubble bubble-sassy bubble-centered">
+        <span class="emotion-label color-sassy">~ SASSY GREG ~</span>
+        <span class="quote-text color-sassy">"PICKLES ARE JUST CUCUMBERS THAT WENT TO JAIL AND CAME OUT DIFFERENT."</span>
       </div>
     </div>
-    <div class="reveal reveal-delay-3" style="margin-top:2rem">
+    <div class="greg-awoke" style="margin-top:2rem">
       <p class="narrative awoke-text">you've done it now. you awoke greg.</p>
     </div>
   </section>
@@ -1142,9 +1181,18 @@
 
     function initReveal() {
       var observer = new IntersectionObserver(function(entries) {
-        entries.forEach(function(e) { if (e.isIntersecting) e.target.classList.add("visible"); });
+        entries.forEach(function(e) {
+          if (e.isIntersecting) {
+            e.target.classList.add("visible");
+          } else {
+            // Reset animation so it replays on next scroll-in
+            e.target.classList.remove("visible");
+            // Force reflow to reset CSS animations
+            void e.target.offsetWidth;
+          }
+        });
       }, { threshold: 0.15, rootMargin: "0px 0px -40px 0px" });
-      document.querySelectorAll(".reveal, .greg-slide").forEach(function(el) { observer.observe(el); });
+      document.querySelectorAll(".reveal, .greg-slide, .greg-entrance, .greg-speak, .greg-awoke").forEach(function(el) { observer.observe(el); });
     }
 
     function initScrollIndicator() {
