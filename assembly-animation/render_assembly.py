@@ -35,9 +35,9 @@ TOTAL = EXPLODED_HOLD + ASSEMBLY_FRAMES + ASSEMBLED_HOLD + SETTLE_FRAMES + FRONT
 # Explode offsets in METERS (model is already scaled to meters)
 PARTS_CFG = [
     {"name": "BasePlate",  "file": "BasePlate.stl",  "ez": -0.035, "ex": 0.0,    "ey": 0.0,   "start": 0.0,
-     "assembled_offset": (0, 0, -0.014)},  # flush with bottom of TopCover walls
+     "assembled_offset": (0, 0, -0.011)},  # just above TopCover wall bottom
     {"name": "AAACradle",  "file": "AAACradle.stl",   "ez":  0.025, "ex": 0.030,  "ey": 0.0,   "start": 0.25,
-     "assembled_offset": (0, 0, -0.008)},  # sits on BasePlate, below TopCover body
+     "assembled_offset": (0, 0, -0.005)},  # sits on BasePlate, below TopCover body
     {"name": "TopCover",   "file": "TopCover.stl",    "ez":  0.040, "ex": 0.0,    "ey": 0.0,   "start": 0.55},
     {"name": "Thumbpiece", "file": "Thumbpiece.stl",  "ez":  0.045, "ex": -0.020, "ey": 0.0,   "start": 0.8,
      "assembled_offset": (0, 0, -0.010)},  # drop into TopCover cutout
@@ -179,7 +179,7 @@ def setup_lights(size):
     bg.inputs["Strength"].default_value = 0.2
 
 def setup_camera(size):
-    d = max(size) * 2.5
+    d = max(size) * 3.2  # pull back to keep all parts in frame during exploded view
     bpy.ops.object.empty_add(location=(0, 0, 0))
     target = bpy.context.active_object
     target.name = "CamTarget"
@@ -258,8 +258,8 @@ def animate(objs, cam, orbit_r):
         cam.keyframe_insert(data_path="location", frame=f)
 
     # Front face = top of device showing screen cutout + thumbstick.
-    # Camera elevated above, looking down at ~30° from vertical, slight Y offset for depth
-    front_pos = Vector((orbit_r * 0.1, -orbit_r * 0.35, orbit_r * 0.65))
+    # Camera centered on X so long edge is horizontal in frame
+    front_pos = Vector((0, -orbit_r * 0.28, orbit_r * 0.52))
     start_pos = cam.location.copy()
     for f in range(orbit_end, settle_end + 1):
         t = (f - orbit_end) / max(SETTLE_FRAMES, 1)
