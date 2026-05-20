@@ -302,7 +302,7 @@
       <div class="reveal reveal-delay-2">
         <div class="chat-bubble bubble-sassy">
           <span class="emotion-label color-sassy">~ SASSY GREG ~</span>
-          <span class="quote-text color-sassy">"WIFI IS JUST SPICY AIR."</span>
+          <span class="quote-text color-sassy">"PICKLES ARE JUST CUCUMBERS THAT WENT TO JAIL AND CAME OUT DIFFERENT."</span>
         </div>
       </div>
     </div>
@@ -595,10 +595,10 @@
     }
 
     function clearEyeSockets(buf, emotion) {
-      // Standard clearing for most emotions
-      var r = 5;
+      // Clear radius matches the eye outline radius — no ghost ring
+      var r = 4;
       // Bigger clear for emotions with larger eyes
-      if (emotion === "excited" || emotion === "slaphappy" || emotion === "hungry") r = 6;
+      if (emotion === "excited" || emotion === "slaphappy" || emotion === "hungry") r = 5;
       if (emotion === "unhinged") {
         bufCircleClear(buf, LX, EY, 7);  // big eye
         bufCircleClear(buf, RX, EY, 4);  // small eye
