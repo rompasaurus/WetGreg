@@ -34,11 +34,13 @@ TOTAL = EXPLODED_HOLD + ASSEMBLY_FRAMES + ASSEMBLED_HOLD + SETTLE_FRAMES + FRONT
 
 # Explode offsets in METERS (model is already scaled to meters)
 PARTS_CFG = [
-    {"name": "BasePlate",  "file": "BasePlate.stl",  "ez": -0.035, "ex": 0.0,    "ey": 0.0,   "start": 0.0},
-    {"name": "AAACradle",  "file": "AAACradle.stl",   "ez":  0.025, "ex": 0.030,  "ey": 0.0,   "start": 0.25},
+    {"name": "BasePlate",  "file": "BasePlate.stl",  "ez": -0.035, "ex": 0.0,    "ey": 0.0,   "start": 0.0,
+     "assembled_offset": (0, 0, -0.004)},  # drop to bottom of TopCover shell
+    {"name": "AAACradle",  "file": "AAACradle.stl",   "ez":  0.025, "ex": 0.030,  "ey": 0.0,   "start": 0.25,
+     "assembled_offset": (0, 0, -0.004)},  # sits on the BasePlate
     {"name": "TopCover",   "file": "TopCover.stl",    "ez":  0.040, "ex": 0.0,    "ey": 0.0,   "start": 0.55},
     {"name": "Thumbpiece", "file": "Thumbpiece.stl",  "ez":  0.045, "ex": -0.020, "ey": 0.0,   "start": 0.8,
-     "assembled_offset": (0, 0, -0.010)},  # drop 10mm into TopCover cutout
+     "assembled_offset": (0, 0, -0.010)},  # drop into TopCover cutout
 ]
 
 MATS = {
