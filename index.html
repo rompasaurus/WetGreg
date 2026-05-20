@@ -262,6 +262,20 @@
     }
     .awoke-text { color: var(--red); font-weight: 600; }
 
+    /* ── Hardware Videos ── */
+    .hw-video {
+      max-width: 800px;
+      width: 100%;
+      border-radius: 12px;
+    }
+    .hw-tagline {
+      font-size: clamp(1.2rem, 3vw, 2rem);
+      font-weight: 400;
+      color: var(--subtext0);
+      text-align: center;
+      letter-spacing: 0.05em;
+    }
+
     /* ── Responsive ── */
     @media (max-width: 768px) {
       .greg-row { flex-direction: column; gap: 1rem; }
@@ -489,6 +503,30 @@
           <canvas class="octopus-canvas greg-banner-canvas greg-banner-canvas-right" id="greg-right" aria-hidden="true"></canvas>
         </div>
       </div>
+    </div>
+  </section>
+
+  <!-- ═══ 9: ASSEMBLY ANIMATION — "this is Wet Greg's home" ═══ -->
+  <section class="section" style="background:radial-gradient(ellipse at 50% 40%,rgba(203,166,247,0.04) 0%,transparent 60%)">
+    <div class="reveal">
+      <video class="hw-video" autoplay loop muted playsinline>
+        <source src="assembly.webm" type="video/webm">
+      </video>
+    </div>
+    <div class="reveal reveal-delay-2" style="margin-top:2rem">
+      <p class="hw-tagline">this is <strong style="color:var(--mauve)">Wet Greg's</strong> home</p>
+    </div>
+  </section>
+
+  <!-- ═══ 10: PCB ANIMATION — "this is Wet Greg's brain" ═══ -->
+  <section class="section" style="background:radial-gradient(ellipse at 50% 40%,rgba(166,227,161,0.04) 0%,transparent 60%)">
+    <div class="reveal">
+      <video class="hw-video" autoplay loop muted playsinline>
+        <source src="pcb_rotate.webm" type="video/webm">
+      </video>
+    </div>
+    <div class="reveal reveal-delay-2" style="margin-top:2rem">
+      <p class="hw-tagline">this is <strong style="color:var(--green)">Wet Greg's</strong> brain</p>
     </div>
   </section>
 
