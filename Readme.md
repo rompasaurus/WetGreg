@@ -1,37 +1,53 @@
-Wet Greg?
-    who is wet greg?
-    
-    well hes an octopus and he's... wet 
+# Wet Greg
 
-    that's all you need to know 
-    stop asking questions  he might hear you
+### Who is Wet Greg?
 
-    **Greg Apears**
+Well, he's an octopus... and he's wet.
 
-    "" say weird quote ** stylized like the device 
+That's all you need to know. Stop asking questions — *he might hear you.*
 
-    Text Below him: you've done it now you awoke greg 
+---
 
-    "" more unhinged crazy quotes "" 
+**Greg appears.**
 
-    Greg is special, he has a habit of saying ... weird things sometimes he can get a bit unhinged as well
+> *"Did you know that if you lick a lamp post in winter your tongue gets stuck? I tried it. I don't even have a tongue."*
 
-    " a supportive quote"
-    
-    But some times he can be a genuine sweetheart 
+You've done it now. You awoke Greg.
 
-    " a angry quote"
+> *"I once had a dream I was a shoe. It wasn't even a nice shoe. It was a Croc. I woke up screaming."*
 
-    other times his emotions can get the better of him"
+Greg is... *special*. He has a habit of saying weird things. Sometimes he can get a bit unhinged.
 
-    " a hungry quote"
-    
-    and if you dont feed him he might get feisty.
+---
 
-    " a creepy quote"
+> *"Hey. You're doing okay, you know that? Like genuinely. I'm proud of you. Now stop being weird about it."*
 
-    he can get... a bit too attached too
+But sometimes he can be a genuine sweetheart.
 
-    depending on how you interact with greg you might bring out an emotional side of him
+---
 
-    greg is sensistive, kind and sassy he reacts to you and feeds off your emotional state, what you do to greg and with him in the world will affect him, he's a pal that grows with you
+> *"DO NOT TOUCH MY KELP. I WILL END CIVILIZATIONS OVER THAT KELP. THAT IS MY EMOTIONAL SUPPORT KELP."*
+
+Other times his emotions can get the better of him.
+
+---
+
+> *"You gonna eat that? What about that? What about the thing behind you? Is that food? Everything is food if you believe in yourself."*
+
+And if you don't feed him? He might get feisty.
+
+---
+
+> *"I've been watching you sleep. Not in a weird way. Okay maybe in a slightly weird way. You drool a little. It's fine. I collected some."*
+
+He can also get... a bit *too* attached.
+
+---
+
+## How Greg Works
+
+Depending on how you interact with Greg, you might bring out a different emotional side of him.
+
+Greg is **sensitive**, **kind**, and **sassy**. He reacts to you and feeds off your emotional state. What you do to Greg — and with him in the world — will affect him.
+
+He's a pal that grows with you.
