@@ -19,7 +19,7 @@ PCB_FILE = os.path.join(BASE, "parts", "pcb_full.glb")
 FRAMES_DIR = os.path.join(BASE, "frames", "pcb")
 os.makedirs(FRAMES_DIR, exist_ok=True)
 
-RES_X, RES_Y = 1280, 720
+RES_X, RES_Y = 1920, 1200
 SAMPLES = 64
 FPS = 30
 DURATION = 8  # seconds for full rotation

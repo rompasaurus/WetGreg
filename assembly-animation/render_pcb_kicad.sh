@@ -84,7 +84,7 @@ print(f'{round(x,1)},{round(z % 360, 1)}')
 
     kicad-cli pcb render "$PCB" \
         -o "$OUTFILE" \
-        --width 1280 --height 720 \
+        --width 1920 --height 1200 \
         --quality high \
         --perspective \
         --background transparent \

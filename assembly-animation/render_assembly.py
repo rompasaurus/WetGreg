@@ -21,7 +21,7 @@ PARTS_DIR = os.path.join(BASE, "parts")
 FRAMES_DIR = os.path.join(BASE, "frames")
 os.makedirs(FRAMES_DIR, exist_ok=True)
 
-RES_X, RES_Y = 1280, 720
+RES_X, RES_Y = 1920, 1200
 SAMPLES = 64
 FPS = 30
 
