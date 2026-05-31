@@ -381,9 +381,72 @@
     @media (max-width: 480px) {
       .greg-banner-canvas-right { display: none; }
     }
+  
+    /* ── Nav Bar ── */
+    .navbar {
+      position: fixed; top: 0; left: 0; width: 100%; z-index: 1000;
+      display: flex; align-items: center; gap: 1rem;
+      padding: 0.75rem 1.25rem; box-sizing: border-box;
+      background: rgba(17, 17, 27, 0.72);
+      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--surface0);
+      flex-wrap: wrap;
+    }
+    .navbar .brand {
+      font-weight: 800; letter-spacing: 0.05em; margin-right: auto;
+      font-size: 1.05rem; text-decoration: none;
+      background: linear-gradient(135deg, var(--blue), var(--mauve), var(--pink));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .navbar a.nav-link {
+      color: var(--subtext0); text-decoration: none; font-family: inherit;
+      font-size: 0.9rem; padding: 0.4rem 0.75rem; border-radius: 999px;
+      white-space: nowrap;
+      transition: color 0.25s ease, background 0.25s ease;
+    }
+    .navbar a.nav-link:hover { color: var(--text); background: var(--surface0); }
+    @media (max-width: 680px) {
+      .navbar { gap: 0.35rem; padding: 0.55rem 0.6rem; justify-content: center; }
+      .navbar .brand { width: 100%; text-align: center; margin: 0 0 0.35rem 0; }
+      .navbar a.nav-link { font-size: 0.78rem; padding: 0.3rem 0.5rem; }
+    }
+    /* keep snap targets clear of the fixed navbar */
+    .section { scroll-margin-top: 64px; }
+
+    /* ── Link cards (who / help sections) ── */
+    .link-grid {
+      display: flex; flex-wrap: wrap; justify-content: center;
+      gap: 1rem; margin-top: 2rem;
+    }
+    .greg-btn {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: var(--base); color: var(--text); text-decoration: none;
+      border: 2px solid var(--blue); font-family: inherit;
+      padding: 0.85rem 1.4rem; font-size: 1rem; font-weight: 600;
+      border-radius: 999px; cursor: pointer;
+      transition: transform 0.25s ease, background 0.25s ease, color 0.25s ease, box-shadow 0.25s ease;
+    }
+    .greg-btn:hover {
+      transform: translateY(-3px);
+      background: var(--blue); color: var(--crust);
+      box-shadow: 0 8px 24px rgba(137, 180, 250, 0.25);
+    }
+    .placeholder-note {
+      margin-top: 1.75rem; font-style: italic;
+      color: var(--surface2); font-size: 0.95rem;
+    }
   </style>
 </head>
 <body>
+
+  <!-- ═══ NAV BAR ═══ -->
+  <nav class="navbar">
+    <a class="brand" href="#home">💧 WET GREG</a>
+    <a class="nav-link" href="#home">What Is Wet Greg</a>
+    <a class="nav-link" href="#who">Who The Hell Made This?</a>
+    <a class="nav-link" href="#help">I Seriously Need Help</a>
+  </nav>
+
 
   <!-- Floating bubbles background -->
   <div class="bubbles">
@@ -397,7 +460,7 @@
   <div class="scroll-indicator" id="scroll-indicator"><div class="scroll-arrow"></div></div>
 
   <!-- ═══ 1: HERO ═══ -->
-  <section class="section" style="background:radial-gradient(ellipse at 50% 80%,rgba(30,30,46,0.85) 0%,rgba(17,17,27,0.7) 70%)">
+  <section class="section" id="home" style="background:radial-gradient(ellipse at 50% 80%,rgba(30,30,46,0.85) 0%,rgba(17,17,27,0.7) 70%)">
     <div class="reveal"><h1 class="title-huge">WET GREG</h1></div>
     <div class="reveal reveal-delay-1" style="margin-top:1.5rem"><p class="subtitle">who is wet greg?</p></div>
     <div class="reveal reveal-delay-2" style="margin-top:2rem"><p class="narrative">well he's an octopus and he's... wet</p></div>
@@ -630,6 +693,49 @@
     <div class="reveal reveal-delay-2" style="margin-top:2rem">
       <p class="narrative" style="color:var(--surface2);font-size:0.9rem">this is all i have</p>
     </div>
+  </section>
+
+  <!-- ═══ NAV: WHO THE HELL MADE THIS ═══ -->
+  <section class="section" id="who" style="background:radial-gradient(ellipse at 50% 50%,rgba(180,190,254,0.04) 0%,transparent 60%)">
+    <div class="reveal">
+      <h2 class="title-big" style="margin-bottom:1rem">who the hell made this?</h2>
+    </div>
+    <div class="reveal reveal-delay-1">
+      <p class="narrative">you don't want to know.</p>
+    </div>
+    <div class="reveal reveal-delay-2" style="margin-top:0.5rem">
+      <p class="narrative" style="color:var(--surface2);font-size:0.95rem">...fine. if you <em>really</em> have to know, the trail leads here:</p>
+    </div>
+    <div class="reveal reveal-delay-3 link-grid">
+      <a class="greg-btn" href="https://github.com/rompasaurus" target="_blank" rel="noopener noreferrer">🦖 rompasaurus on GitHub</a>
+    </div>
+    <p class="placeholder-note reveal reveal-delay-4">(don't say we didn't warn you.)</p>
+  </section>
+
+  <!-- ═══ NAV: I SERIOUSLY NEED HELP ═══ -->
+  <section class="section" id="help" style="background:radial-gradient(ellipse at 50% 50%,rgba(148,226,213,0.04) 0%,transparent 60%)">
+    <div class="reveal">
+      <h2 class="title-big" style="margin-bottom:1rem">I seriously need help</h2>
+    </div>
+    <div class="reveal reveal-delay-1">
+      <p class="narrative" style="color:var(--mauve);font-weight:700">I have no idea what I am doing, but I'm sure having fun doing it.</p>
+    </div>
+
+    <div class="reveal reveal-delay-2" style="margin-top:2.5rem">
+      <p class="narrative">want to help build the wettest Greg on the internet? contribution guidelines are still being written — check back soon, or poke us through the links below.</p>
+    </div>
+
+    <div class="reveal reveal-delay-3 link-grid">
+      <a class="greg-btn" href="#" target="_blank" rel="noopener noreferrer">💬 Discord</a>
+      <a class="greg-btn" href="mailto:michael.e.mchenry@gmail.com">✉️ Email</a>
+    </div>
+    <div class="reveal reveal-delay-3" style="margin-top:2.5rem">
+      <p class="narrative">here's how you can keep Greg hydrated (and the lights on):</p>
+    </div>
+    <div class="reveal reveal-delay-3 link-grid">
+      <a class="greg-btn" href="#" target="_blank" rel="noopener noreferrer">🅿️ Patreon</a>
+    </div>
+    <p class="placeholder-note reveal reveal-delay-4">(Patreon &amp; Discord are placeholders for now — real links coming soon.)</p>
   </section>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
